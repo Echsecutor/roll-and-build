@@ -2,6 +2,15 @@
 Roll and Build Board Game Server
 
 
+## Basic Usage
+
+- clone this repository
+- compile
+`mvn clean install`
+- run
+`java -jar target/*.jar`
+- navigate to the swagger-ui to test the API `xdg-open http://localhost:8080/swagger-ui.html`
+
 
 ## License
 
