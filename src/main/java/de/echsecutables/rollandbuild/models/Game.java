@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import javax.persistence.Id;
 import java.util.ArrayList;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @ApiModel(value = "Game", description = "Represents a concrete Game instance")
 public class Game {
@@ -23,6 +24,6 @@ public class Game {
     private Long id;
 
     @ApiModelProperty(value = "IDs of players in this game.")
-    private ArrayList<String> players;
+    private ArrayList<String> players = new ArrayList<>();
 
 }
