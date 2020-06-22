@@ -1,0 +1,7 @@
+logging.level:
+  ROOT: INFO
+  de.echsecutables: TRACE
+
+spring:
+  session.store-type: jdbc
+  h2.console.enabled: true

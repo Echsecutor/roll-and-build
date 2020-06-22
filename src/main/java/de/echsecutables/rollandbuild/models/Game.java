@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.List;
+import java.util.ArrayList;
 
 @Data
 @AllArgsConstructor
@@ -16,10 +18,11 @@ import java.util.List;
 public class Game {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "Primary Key", required = true, example = "42")
     private Long id;
 
     @ApiModelProperty(value = "IDs of players in this game.")
-    private List<String> players;
+    private ArrayList<String> players;
 
 }
