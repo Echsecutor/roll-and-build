@@ -5,12 +5,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 
 @Data
 @NoArgsConstructor
 @ApiModel(description = "A 2d grid of occupied/unoccupied fields representing the shape of a buildings base.")
+@Embeddable
 public class Shape {
 
     @ApiModelProperty(value = "Bounding box width")
