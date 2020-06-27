@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -42,11 +43,11 @@ public class UserController {
     private GameRepository gameRepository;
 
     private Player getOrCreatePlayer(String sessionId) {
-        Optional<Player> optPlayer = playerRepository
-                .findById(sessionId);
-        if (optPlayer.isPresent()) {
-            LOGGER.debug("Found record for player {}", optPlayer.get());
-            return optPlayer.get();
+        List<Player> players = playerRepository
+                .findBySessionId(sessionId);
+        if (!players.isEmpty()) {
+            LOGGER.debug("Found record for player {}", players.get(0));
+            return players.get(0);
         }
         Player player = playerRepository.save(new Player(sessionId));
         LOGGER.debug("Created new record for player {}", player);
@@ -61,7 +62,7 @@ public class UserController {
 
     @PostMapping(value = "/player/name", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Set the player name for the current session.")
-    public ResponseEntity setPlayerName(@ApiParam(value = "New Player Name. Max 256 Characters, no weird stuff ;)", example = "Max Power", required = true)
+    public ResponseEntity<GenericApiResponse> setPlayerName(@ApiParam(value = "New Player Name. Max 256 Characters, no weird stuff ;)", example = "Max Power", required = true)
                                         @RequestBody String name,
                                         HttpServletRequest request) {
         Validator validator = ESAPI.validator();
@@ -79,7 +80,7 @@ public class UserController {
 
     @PostMapping(value = "/player/join", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create or join game.")
-    public ResponseEntity joinGame(@ApiParam(value = "Game ID must be a positive Integer. Leave empty to create a new game.", example = "")
+    public ResponseEntity<GenericApiResponse> joinGame(@ApiParam(value = "Game ID must be a positive Integer. Leave empty to create a new game.")
                                    @RequestBody(required = false) String gameID,
                                    HttpServletRequest request) {
 
@@ -102,21 +103,21 @@ public class UserController {
         }
 
         Player player = getOrCreatePlayer(request.getSession().getId());
-        if (player.getGames().contains(game.getId())) {
+        if (player.getGameIds().contains(game.getId())) {
             LOGGER.debug("Player {} already in Game {}", player, game);
 
-            if (!game.getPlayers().contains(player.getSessionId())) {
+            if (!game.getPlayerIds().contains(player.getId())) {
                 LOGGER.error("FIXME! Inconsistent state! Player {} not listed in game {}", player, game);
-                game.getPlayers().add(player.getSessionId());
+                game.getPlayerIds().add(player.getId());
                 game = gameRepository.save(game);
                 LOGGER.debug("Fixed game {}", game);
             }
             return GenericApiResponse.buildResponse(HttpStatus.ALREADY_REPORTED, "Already playing in Game ID '" + gameID + "'.", request.getRequestURI());
         }
-        player.getGames().add(game.getId());
+        player.getGameIds().add(game.getId());
         player = playerRepository.save(player);
 
-        game.getPlayers().add(player.getSessionId());
+        game.getPlayerIds().add(player.getId());
         gameRepository.save(game);
 
         LOGGER.info("Player {} joined Game {}", player, game);

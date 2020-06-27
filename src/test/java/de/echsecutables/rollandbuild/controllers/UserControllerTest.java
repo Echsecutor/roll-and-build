@@ -4,6 +4,7 @@ import de.echsecutables.rollandbuild.models.Game;
 import de.echsecutables.rollandbuild.models.Player;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
+import org.assertj.core.util.Lists;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -55,11 +56,11 @@ class UserControllerTest {
 
     void setupMockRepos() {
 
-        Mockito.when(playerRepository.findById(ArgumentMatchers.anyString())).thenAnswer(stub -> {
+        Mockito.when(playerRepository.findBySessionId(ArgumentMatchers.anyString())).thenAnswer(stub -> {
             String id = stub.getArgument(0);
             if (playerRepoMock.containsKey(id))
-                return Optional.of(playerRepoMock.get(id));
-            return Optional.empty();
+                return Lists.list(playerRepoMock.get(id));
+            return Lists.emptyList();
         });
         Mockito.when(playerRepository.save(ArgumentMatchers.any(Player.class))).thenAnswer(stub -> {
             Player player = stub.getArgument(0);

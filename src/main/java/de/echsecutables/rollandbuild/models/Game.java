@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @Data
 @NoArgsConstructor
 @Entity
-@ApiModel(value = "Game", description = "Represents a concrete Game instance")
+@ApiModel(description = "Represents a concrete Game instance")
 public class Game {
 
     @Id
@@ -23,7 +23,13 @@ public class Game {
     @ApiModelProperty(value = "Primary Key", required = true, example = "42")
     private Long id;
 
-    @ApiModelProperty(value = "IDs of players in this game.")
-    private ArrayList<String> players = new ArrayList<>();
+    @ApiModelProperty(value = "IDs of players in this game.", example = "[23, 42]")
+    private ArrayList<Long> playerIds = new ArrayList<>();
+
+    @ApiModelProperty(value = "Current Game phase.", example = "ROLLING")
+    private Phase phase = Phase.SETUP;
+
+    @ApiModelProperty(value = "ID of the currently active player. Applicable in some phases.", example = "42")
+    private Long activePlayerId;
 
 }
