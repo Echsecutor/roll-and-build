@@ -2,15 +2,12 @@ package de.echsecutables.rollandbuild.models;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,7 +21,8 @@ public class Game {
     private Long id;
 
     @ApiModelProperty(value = "IDs of players in this game.", example = "[23, 42]")
-    private ArrayList<Long> playerIds = new ArrayList<>();
+    @ManyToMany
+    private List<Player> players = new ArrayList<>();
 
     @ApiModelProperty(value = "Current Game phase.", example = "ROLLING")
     private Phase phase = Phase.SETUP;

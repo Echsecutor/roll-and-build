@@ -19,10 +19,11 @@ public class Building {
     private Long id;
 
     @ApiModelProperty(value = "2d Shape of this buildings base")
-    //@ManyToOne(targetEntity = Shape.class)
+
     private Shape shape;
 
-    @ApiModelProperty(value = "ID of the dice to roll for this building or null if the building does not yield a dice.")
-    private Long DiceId;
+    @ApiModelProperty(value = "The dice to roll for this building or null if the building does not yield a dice.")
+    @ManyToOne
+    private Dice dice;
 
 }

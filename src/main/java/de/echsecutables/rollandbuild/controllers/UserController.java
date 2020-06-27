@@ -34,8 +34,7 @@ import java.util.Optional;
 })
 public class UserController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenericApiResponse.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private PlayerRepository playerRepository;
@@ -106,21 +105,21 @@ public class UserController {
         }
 
         Player player = getOrCreatePlayer(request.getSession().getId());
-        if (player.getGameIds().contains(game.getId())) {
+        if (player.getGames().contains(game)) {
             LOGGER.debug("Player {} already in Game {}", player, game);
 
-            if (!game.getPlayerIds().contains(player.getId())) {
+            if (!game.getPlayers().contains(player)) {
                 LOGGER.error("FIXME! Inconsistent state! Player {} not listed in game {}", player, game);
-                game.getPlayerIds().add(player.getId());
+                game.getPlayers().add(player);
                 game = gameRepository.save(game);
                 LOGGER.debug("Fixed game {}", game);
             }
             return GenericApiResponse.buildResponse(HttpStatus.ALREADY_REPORTED, "Already playing in Game ID '" + gameID + "'.", request.getRequestURI());
         }
-        player.getGameIds().add(game.getId());
+        player.getGames().add(game);
         player = playerRepository.save(player);
 
-        game.getPlayerIds().add(player.getId());
+        game.getPlayers().add(player);
         gameRepository.save(game);
 
         LOGGER.info("Player {} joined Game {}", player, game);

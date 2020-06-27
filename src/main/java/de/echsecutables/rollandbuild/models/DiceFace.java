@@ -6,9 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
 
+import javax.persistence.Embeddable;
+
 @Data
 @NoArgsConstructor
 @ApiModel(description = "A Face of a dice is made up of a combination of symbols. This class represents a (part od a ) face in a tree structure")
+@Embeddable
 public class DiceFace {
 
     @ApiModelProperty(value = "How faces are combined.", example = "AND")
