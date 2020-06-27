@@ -147,7 +147,7 @@ class UserControllerTest {
         mockMvc.perform(get("/player")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.games[0]").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gameIds[0]").isNumber())
                 .andReturn();
 
 
