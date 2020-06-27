@@ -1,11 +1,14 @@
-# roll-and-build
-Roll and Build Board Game Server
+# Roll and Build Board Game
+
+[![Maven Build and Tests](https://github.com/Echsecutor/roll-and-build/workflows/Maven%20Build%20and%20Tests/badge.svg)](https://github.com/Echsecutor/roll-and-build/actions?query=workflow%3A%22Maven+Build+and+Tests%22)
+
+This web app implementation of a roll and build type board game is under construction.
 
 
 ## Basic Usage
 
 - clone this repository
-- compile
+- compile/test
 `mvn clean install`
 - run
 `java -jar target/*.jar`
