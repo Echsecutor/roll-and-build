@@ -1,5 +1,6 @@
 package de.echsecutables.rollandbuild.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,44 +16,66 @@ import javax.persistence.Transient;
 @Embeddable
 public class Shape {
 
-    @ApiModelProperty(value = "Bounding box width")
-    private int width = 0;
-
-    @ApiModelProperty(value = "Bounding box height")
-    private int height = 0;
-
-    @ApiModelProperty(value = "A width x height matrix representing which fields are occupied by the shape.")
+    @ApiModelProperty(value = "A matrix representing which fields are occupied by the shape. By convention, all columns have the same height.")
     private boolean[][] occupied;
 
-    private void assertCoordinatesInRange(int x, int y) throws IllegalArgumentException {
-        if (!(0 <= x && x < width && 0 <= y && y < height)) {
-            throw new IllegalArgumentException("Invalid coordinates");
+    private void assertShapeInitialised() {
+        if (occupied == null || occupied.length <= 0 || occupied[0].length <= 0) {
+            throw new IllegalStateException("Shape not initialised before access!");
         }
     }
 
-    private void resetOccupied() {
-        this.occupied = new boolean[this.width][this.height];
+    private void assertCoordinatesInRange(int x, int y) throws IllegalArgumentException {
+        assertShapeInitialised();
+        if (!(0 <= x && x < getWidth() && 0 <= y && y < getHeight())) {
+            throw new IllegalArgumentException("Invalid coordinates (" + x + ", " + y + ") for Shape [" + getWidth() + ", " + getHeight() + "]");
+        }
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-        resetOccupied();
+    public Shape(int width, int height) {
+        occupied = new boolean[height][width];
     }
 
-    public void setHeight(int height) {
-        this.height = height;
-        resetOccupied();
+    @Transient
+    @JsonIgnore
+    public int getHeight() {
+        assertShapeInitialised();
+        return occupied.length;
+    }
+
+    @Transient
+    @JsonIgnore
+    public int getWidth() {
+        assertShapeInitialised();
+        return occupied[0].length;
     }
 
     @Transient
     public boolean getOccupied(int x, int y) throws IllegalArgumentException {
         assertCoordinatesInRange(x, y);
-        return occupied[x][y];
+        return occupied[y][x];
     }
 
-    @Transient
     public void setOccupied(int x, int y, boolean value) throws IllegalArgumentException {
         assertCoordinatesInRange(x, y);
-        occupied[x][y] = value;
+        occupied[y][x] = value;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Shape:\n");
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                if (getOccupied(x, y)) {
+                    builder.append("X");
+                } else {
+                    builder.append("O");
+                }
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
+
 }

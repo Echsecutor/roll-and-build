@@ -1,29 +1,28 @@
 package de.echsecutables.rollandbuild.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Data
 @NoArgsConstructor
-@Entity
-@ApiModel(description = "Represents a type of building.")
+@Embeddable
+@ApiModel(description = "A concrete building placed on a players board in a concrete game.")
 public class Building {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(value = "Primary Key", example = "42")
-    private Long id;
+    @ApiModelProperty(value = "Most of the information (shape, dice, etc) are encoded in the building type.")
+    private BuildingType buildingType;
 
-    @ApiModelProperty(value = "2d Shape of this buildings base")
+    @ApiModelProperty(value = "left/down shift from top left corner of board to top left corner of rotated shape.")
+    private Point position;
 
-    private Shape shape;
+    @ApiModelProperty(value = "Rotation of the shape defined in the buildingType")
+    private Orientation orientation;
 
-    @ApiModelProperty(value = "The dice to roll for this building or null if the building does not yield a dice.")
-    @ManyToOne
-    private Dice dice;
 
 }

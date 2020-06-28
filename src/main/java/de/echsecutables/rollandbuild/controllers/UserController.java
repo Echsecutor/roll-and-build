@@ -4,7 +4,7 @@ import de.echsecutables.rollandbuild.models.Game;
 import de.echsecutables.rollandbuild.models.Player;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
-import de.echsecutables.rollandbuild.utils;
+import de.echsecutables.rollandbuild.Utils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -57,7 +57,7 @@ public class UserController {
     @GetMapping(value = "/player", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get the data for the current user identified by session ID.")
     public ResponseEntity<Player> getPlayerData(HttpServletRequest request) {
-        utils.logRequest(LOGGER, request);
+        Utils.logRequest(LOGGER, request);
         return ResponseEntity.ok(getOrCreatePlayer(request.getSession().getId()));
     }
 
@@ -66,7 +66,7 @@ public class UserController {
     public ResponseEntity<GenericApiResponse> setPlayerName(@ApiParam(value = "New Player Name. Max 256 Characters, no weird stuff ;)", example = "Max Power", required = true)
                                                             @RequestBody String name,
                                                             HttpServletRequest request) {
-        utils.logRequest(LOGGER, request);
+        Utils.logRequest(LOGGER, request);
         Validator validator = ESAPI.validator();
         if (!validator.isValidInput("playerName", name, "SafeString", 256, false)) {
             LOGGER.warn("Invalid Player Name '{}' from request {}", name, request.toString());
@@ -85,7 +85,7 @@ public class UserController {
     public ResponseEntity<GenericApiResponse> joinGame(@ApiParam(value = "Game ID must be a positive Integer. Leave empty to create a new game.")
                                                        @RequestBody(required = false) String gameID,
                                                        HttpServletRequest request) {
-        utils.logRequest(LOGGER, request);
+        Utils.logRequest(LOGGER, request);
         Game game;
         if (gameID == null || gameID.isEmpty()) {
             game = gameRepository.save(new Game());
