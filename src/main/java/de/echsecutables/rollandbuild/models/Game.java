@@ -20,14 +20,18 @@ public class Game {
     @ApiModelProperty(value = "Primary Key", required = true, example = "42")
     private Long id;
 
+    @ApiModelProperty(value = "Current Game phase.", example = "ROLLING")
+    private Phase phase = Phase.SETUP;
+
     @ApiModelProperty(value = "IDs of players in this game.", example = "[23, 42]")
     @ManyToMany
     private List<Player> players = new ArrayList<>();
 
-    @ApiModelProperty(value = "Current Game phase.", example = "ROLLING")
-    private Phase phase = Phase.SETUP;
-
     @ApiModelProperty(value = "ID of the currently active player. Applicable in some phases.", example = "42")
     private Long activePlayerId;
 
+    // Embedded.
+    // Contract: for (Board board:boards){ assert (players.contains(board)); }
+    @ApiModelProperty(value = "The players' boards in this game.")
+    private ArrayList<Board> boards = new ArrayList<>();
 }

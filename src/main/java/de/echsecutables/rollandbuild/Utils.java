@@ -13,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 
+    private Utils(){}
+
     public static void logRequest(Logger logger, HttpServletRequest request) {
         logger.trace("[" + request.getSession().getId() + "] " + request.getMethod() + ": " + request.getRequestURI());
     }
@@ -29,35 +31,4 @@ public class Utils {
         }
     }
 
-    public static Shape rotateShape(Shape original, Orientation orientation) {
-        LOGGER.debug("rotating {} to {}", original, orientation);
-
-        if (orientation == Orientation.ORIGINAL)
-            return original;
-
-        Shape rotated;
-        if (orientation == Orientation.HALF) {
-            rotated = new Shape(original.getWidth(), original.getHeight());
-            // mirror x and mirror y = 180 degree rotation
-            for (int x = 0; x < rotated.getWidth(); x++) {
-                for (int y = 0; y < rotated.getHeight(); y++) {
-                    rotated.setOccupied(x, y, original.getOccupied(original.getWidth() - x - 1, original.getHeight() - y - 1));
-                }
-            }
-        } else {
-            rotated = new Shape(original.getHeight(), original.getWidth());
-            for (int x = 0; x < rotated.getWidth(); x++) {
-                for (int y = 0; y < rotated.getHeight(); y++) {
-                    if (orientation == Orientation.CLOCKWISE) {
-                        rotated.setOccupied(x, y, original.getOccupied(y, original.getHeight() - x - 1));
-                    } else {
-                        rotated.setOccupied(x, y, original.getOccupied(original.getWidth() - y - 1, x));
-                    }
-                }
-            }
-        }
-
-        LOGGER.debug("rotated: {}", rotated);
-        return rotated;
-    }
 }

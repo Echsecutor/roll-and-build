@@ -18,12 +18,14 @@ public class BuildingType {
     @ApiModelProperty(value = "Primary Key", example = "42")
     private Long id;
 
-    @ApiModelProperty(value = "2d Shape of this buildings base")
-
+    @ApiModelProperty(value = "2d Shape of this buildings base", required = true)
     private Shape shape;
 
     @ApiModelProperty(value = "The dice to roll for this building or null if the building does not yield a dice.")
     @ManyToOne
-    private Dice dice;
+    private Dice dice = null;
 
+    public BuildingType(Shape shape) {
+        this.shape = shape;
+    }
 }

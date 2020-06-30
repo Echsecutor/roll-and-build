@@ -19,15 +19,15 @@ class UtilsTest {
 
         Shape t = mapper.readValue(tShapeJson, Shape.class);
 
-        Shape cw = Utils.rotateShape(t, Orientation.CLOCKWISE);
+        Shape cw = Geometry.rotateShape(t, Orientation.CLOCKWISE);
         Shape cwExpected = mapper.readValue(cwExpectedJSON, Shape.class);
         Assert.assertEquals(cwExpected, cw);
 
-        Shape ccw = Utils.rotateShape(t, Orientation.COUNTERCLOCKWISE);
+        Shape ccw = Geometry.rotateShape(t, Orientation.COUNTERCLOCKWISE);
         Shape ccwExpected = mapper.readValue(ccwExpectedJSON, Shape.class);
         Assert.assertEquals(ccwExpected, ccw);
 
-        Shape half = Utils.rotateShape(t, Orientation.HALF);
+        Shape half = Geometry.rotateShape(t, Orientation.HALF);
         Shape halfExpected = mapper.readValue(halfExpectedJSON, Shape.class);
         Assert.assertEquals(halfExpected, half);
 
