@@ -1,5 +1,6 @@
-package de.echsecutables.rollandbuild;
+package de.echsecutables.rollandbuild.mechanics;
 
+import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.models.Orientation;
 import de.echsecutables.rollandbuild.models.Shape;
 import org.slf4j.Logger;

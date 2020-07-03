@@ -10,6 +10,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 
+// This class is a convenience wrapper for boolean[][]
 @Data
 @NoArgsConstructor
 @ApiModel(description = "A 2d grid of occupied/unoccupied fields representing the shape of a buildings base.")

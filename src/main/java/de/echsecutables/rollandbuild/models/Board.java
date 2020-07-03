@@ -1,7 +1,8 @@
 package de.echsecutables.rollandbuild.models;
 
-import de.echsecutables.rollandbuild.Geometry;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.echsecutables.rollandbuild.Utils;
+import de.echsecutables.rollandbuild.mechanics.Geometry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -29,6 +30,8 @@ public class Board {
     @ApiModelProperty(value = "Buildings placed on this board.")
     private List<Building> buildings = new ArrayList<>();
 
+    private int[] counters = new int[Counter.values().length];
+
     @ManyToOne
     @ApiModelProperty(value = "A board always belongs to a player.")
     private Player owner;
@@ -38,6 +41,7 @@ public class Board {
     }
 
     @Transient
+    @JsonIgnore
     // returns success
     public boolean addBuilding(Building building) {
         LOGGER.debug("Adding building {} to board {}", building, this);
@@ -53,5 +57,17 @@ public class Board {
         this.shape = combined.get();
         this.buildings.add(building);
         return true;
+    }
+
+    @Transient
+    @JsonIgnore
+    public int getCounter(Counter counter) {
+        return counters[counter.index()];
+    }
+
+    @Transient
+    @JsonIgnore
+    public void setCounter(Counter counter, int value) {
+        counters[counter.index()] = value;
     }
 }

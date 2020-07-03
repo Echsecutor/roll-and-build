@@ -1,6 +1,7 @@
 package de.echsecutables.rollandbuild;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.echsecutables.rollandbuild.mechanics.Geometry;
 import de.echsecutables.rollandbuild.models.Orientation;
 import de.echsecutables.rollandbuild.models.Shape;
 import org.junit.Assert;

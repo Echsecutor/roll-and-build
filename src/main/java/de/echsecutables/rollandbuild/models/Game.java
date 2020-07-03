@@ -21,7 +21,7 @@ public class Game {
     private Long id;
 
     @ApiModelProperty(value = "Current Game phase.", example = "ROLLING")
-    private Phase phase = Phase.SETUP;
+    private Phase phase = Phase.NOT_READY;
 
     @ApiModelProperty(value = "IDs of players in this game.", example = "[23, 42]")
     @ManyToMany
@@ -31,7 +31,12 @@ public class Game {
     private Long activePlayerId;
 
     // Embedded.
-    // Contract: for (Board board:boards){ assert (players.contains(board)); }
+    // Contract: for (Board board:boards){ assert (players.contains(board.getOwner())); }
     @ApiModelProperty(value = "The players' boards in this game.")
     private ArrayList<Board> boards = new ArrayList<>();
+
+    @ApiModelProperty(value = "The game configuration holds some details of the rules which can be changed per game.")
+    @ManyToOne
+    private GameConfig gameConfig;
+
 }

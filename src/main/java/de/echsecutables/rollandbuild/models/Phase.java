@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel(description = "Phases of the game: determines which actions are currently allowed/whats happening")
 public enum Phase {
+    NOT_READY, // Game Config not loaded yet
+    READY, // waiting for other players/all go!
+    // Start of the actual Game
     SETUP, // initial state. Players setup their board by placing initial buildings
     ROLLING, // Start of each turn: players roll, keep, re roll - parallel and secretly
     GATHERING, // From here on, rolling results are public. Players get resources. - parallel - public - automatic (do we need an extra phase?)
