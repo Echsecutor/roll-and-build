@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
-public class Repositories {
+public class Repositories implements RepositoryWrapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(Repositories.class);
 
     @Autowired

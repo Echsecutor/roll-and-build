@@ -1,6 +1,7 @@
 package de.echsecutables.rollandbuild;
 
 import de.echsecutables.rollandbuild.persistence.Repositories;
+import de.echsecutables.rollandbuild.persistence.RepositoryWrapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +14,7 @@ public class RollAndBuildApplication {
     }
 
     @Bean
-    public Repositories getRepositories() {
+    public RepositoryWrapper getRepositories() {
         return new Repositories();
     }
 }

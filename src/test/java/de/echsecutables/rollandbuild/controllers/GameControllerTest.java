@@ -1,11 +1,12 @@
 package de.echsecutables.rollandbuild.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.echsecutables.rollandbuild.models.Game;
 import de.echsecutables.rollandbuild.models.Player;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
 import org.assertj.core.util.Lists;
-import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -14,12 +15,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -27,17 +28,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 
-
 @ContextConfiguration
 @WebAppConfiguration
-@WebMvcTest(controllers = UserController.class)
+@WebMvcTest(controllers = GameController.class)
 @RunWith(SpringRunner.class)
-class UserControllerTest {
+class GameControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -84,40 +83,43 @@ class UserControllerTest {
 
     }
 
-    @Test
-    void getPlayerData() throws Exception {
 
-        // smoke test: return player with some sessionId
-        mockMvc.perform(get("/player")
-                .accept(MediaType.ALL))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.sessionId", Matchers.not(Matchers.blankOrNullString())))
-                .andReturn();
+    @Test
+    void setGameConfig() {
     }
 
     @Test
-    void setPlayerName() throws Exception {
-
-        String name = "This is my name";
+    void joinGame() throws Exception {
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(sharedHttpSession())
                 .build();
 
-        mockMvc.perform(post("/player/name")
-                .content(name)
-                .contentType(MediaType.TEXT_PLAIN_VALUE)
+        // join non existing game: 404
+        mockMvc.perform(post("/game/join/42")
                 .accept(MediaType.ALL))
-                .andExpect(status().isOk())
+                .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
                 .andReturn();
 
-        mockMvc.perform(get("/player")
+        // Create Game
+        String reStr = mockMvc.perform(post("/game/join/")
                 .accept(MediaType.ALL))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(name))
-                .andReturn();
+                .andExpect(status().is(201))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        GenericApiResponse re = mapper.readValue(reStr, GenericApiResponse.class);
+        Long gameId = Long.parseLong(re.getMessage());
+
+        Assert.assertTrue(gameRepoMock.containsKey(gameId));
+        Game game = gameRepoMock.get(gameId);
+
+        Assert.assertEquals(gameId, game.getId());
+        Assert.assertEquals(1, game.getPlayers().size());
+
+
     }
-
-
 }

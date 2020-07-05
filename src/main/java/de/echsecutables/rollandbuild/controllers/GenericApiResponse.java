@@ -1,10 +1,13 @@
 package de.echsecutables.rollandbuild.controllers;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @ApiModel(value = "ApiResponse", description = "Generic response including a message for debugging errors.")
+@JsonIgnoreProperties(value = "reason", allowGetters = true)
 public class GenericApiResponse {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericApiResponse.class);
 
@@ -51,11 +56,21 @@ public class GenericApiResponse {
 
     public static ResponseEntity<GenericApiResponse> buildResponse(HttpStatus status, String message, String path) {
         LOGGER.debug("Building generic API response : ({}, {}, {})", status.toString(), message, path);
-        return new ResponseEntity<GenericApiResponse>(new GenericApiResponse(status, message, path), status);
+        return new ResponseEntity<>(new GenericApiResponse(status, message, path), status);
     }
 
     public static ResponseEntity<GenericApiResponse> responseFromStringResponse(ResponseEntity<String> stringResponse, String path) {
         return buildResponse(stringResponse.getStatusCode(), stringResponse.getBody(), path);
+    }
+
+    @JsonSetter(value = "timestamp")
+    public void setTimesteampString(String time) {
+        timestamp = LocalDateTime.parse(time);
+    }
+
+    @JsonSetter(value = "status")
+    public void setStatus(int code) {
+        status = HttpStatus.resolve(code);
     }
 
 }
