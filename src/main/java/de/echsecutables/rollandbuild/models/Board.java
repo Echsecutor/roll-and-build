@@ -28,7 +28,7 @@ public class Board {
     private Shape shape;
 
     @ApiModelProperty(value = "Buildings placed on this board.")
-    private List<Building> buildings = new ArrayList<>();
+    private List<Building> placedBuildings = new ArrayList<>();
 
     private int[] counters = new int[Counter.values().length];
 
@@ -36,15 +36,26 @@ public class Board {
     @ApiModelProperty(value = "A board always belongs to a player.")
     private Player owner;
 
+    @ApiModelProperty(value = "Buildings bought and to be placed on this board. " +
+            "If this List is non-empty, the next action of the owner is to place these buildings.")
+    private List<Building> availableBuildings = new ArrayList<>();
+
+
     public Board(int width, int height) {
         shape = new Shape(width, height);
     }
 
+
     @Transient
     @JsonIgnore
+    // contract: availableBuildings.contains(building)
     // returns success
-    public boolean addBuilding(Building building) {
+    public boolean placeBuilding(Building building) {
         LOGGER.debug("Adding building {} to board {}", building, this);
+        if (!availableBuildings.contains(building)) {
+            LOGGER.error("Building '{}' not available for board '{}'!", building, this);
+            return false;
+        }
         Optional<Shape> combined = Geometry.insert(shape,
                 Geometry.rotateShape(building.getBuildingType().getShape(), building.getOrientation()),
                 building.getPosition().getX(),
@@ -54,8 +65,11 @@ public class Board {
             LOGGER.debug("Building does not fit.");
             return false;
         }
+        this.availableBuildings.remove(building);
         this.shape = combined.get();
-        this.buildings.add(building);
+        this.placedBuildings.add(building);
+        LOGGER.debug("Building {} placed.", building);
+
         return true;
     }
 

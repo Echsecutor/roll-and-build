@@ -30,7 +30,13 @@ public class GameConfig {
     private int[] initialCounters = new int[Counter.values().length];
 
     @ApiModelProperty(
-            value = "How many buildings of which type can be build in total.",
+            value = "How many buildings of which type can be build during the setup phase before the first round.",
+            required = true
+    )
+    ArrayList<Pair<Integer, BuildingType>> initialBuildings = new ArrayList<>();
+
+    @ApiModelProperty(
+            value = "How many buildings of which type can be build in total. Initial buildings are NOT subtracted.",
             required = true
     )
     ArrayList<Pair<Integer, BuildingType>> availableBuildings = new ArrayList<>();
