@@ -1,24 +1,18 @@
 package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.Utils;
-import de.echsecutables.rollandbuild.models.Game;
-import de.echsecutables.rollandbuild.models.GameConfig;
-import de.echsecutables.rollandbuild.models.Phase;
-import de.echsecutables.rollandbuild.models.Player;
+import de.echsecutables.rollandbuild.controllers.exceptions.*;
+import de.echsecutables.rollandbuild.models.*;
 import de.echsecutables.rollandbuild.persistence.RepositoryWrapper;
 import io.swagger.annotations.*;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -37,21 +31,28 @@ public class GameController {
     RepositoryWrapper repositories;
 
 
-    @SuppressWarnings("rawtypes")
+    // Load/Create Player and Load game. Throw if game does not exist. (Caught + Transformed to GenericApiResponse)
+    private Pair<Game, Player> getGameAndPlayer(Long gameId, HttpServletRequest request) {
+        Utils.logRequest(LOGGER, request);
+        Player player = repositories.getOrCreatePlayer(request.getSession().getId());
+        Optional<Game> optionalGame = repositories.loadGame(gameId);
+        if (optionalGame.isEmpty()) {
+            LOGGER.debug("Game not found {}", gameId);
+            throw new GameNotFoundException("Game " + gameId + " not found");
+        }
+        return Pair.of(optionalGame.get(), player);
+    }
+
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Game Data attached", response = Game.class)
     })
     @PostMapping(value = "/game/{gameId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getGame(
+    public ResponseEntity<Game> getGame(
             @PathVariable("gameId") Long gameId,
             HttpServletRequest request
     ) {
-        Utils.logRequest(LOGGER, request);
-        Optional<Game> optionalGame = repositories.loadGame(gameId);
-        if (optionalGame.isEmpty()) {
-            return GenericApiResponse.buildResponse(HttpStatus.NOT_FOUND, "GameId " + gameId.toString() + " not found.", request.getRequestURI());
-        }
-        return ResponseEntity.ok(optionalGame.get());
+        Pair<Game, Player> gameAndPlayer = getGameAndPlayer(gameId, request);
+        return ResponseEntity.ok(gameAndPlayer.getFirst());
     }
 
 
@@ -59,25 +60,22 @@ public class GameController {
             @ApiResponse(code = 200, message = "Config Accepted, game phase advanced.", response = GenericApiResponse.class),
             @ApiResponse(code = 403, message = "Player not allowed to set config for this game now.", response = GenericApiResponse.class)
     })
-    @PostMapping(value = "/game/setConfig/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/game/{gameId}/setConfig", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericApiResponse> setGameConfig(
             @PathVariable("gameId") Long gameId,
             @RequestBody GameConfig gameConfig,
             HttpServletRequest request
     ) {
-        Utils.logRequest(LOGGER, request);
         LOGGER.debug("Config {} ", gameConfig);
 
-        Optional<Game> optionalGame = repositories.loadGame(gameId);
-        if (optionalGame.isEmpty()) {
-            return GenericApiResponse.buildResponse(HttpStatus.NOT_FOUND, "GameId " + gameId.toString() + " not found.", request.getRequestURI());
-        }
-        Game game = optionalGame.get();
+        Pair<Game, Player> gameAndPlayer = getGameAndPlayer(gameId, request);
+
+        Game game = gameAndPlayer.getFirst();
         if (game.getPhase() != Phase.NOT_READY) {
             return GenericApiResponse.buildResponse(HttpStatus.FORBIDDEN, "Game " + game.getId() + " is already in phase " + game.getPhase(), request.getRequestURI());
         }
 
-        Player player = repositories.getOrCreatePlayer(request.getSession().getId());
+        Player player = gameAndPlayer.getSecond();
         if (!game.getPlayers().contains(player)) {
             return GenericApiResponse.buildResponse(HttpStatus.FORBIDDEN, "Player " + player.getId() + " not in game " + game.getId(), request.getRequestURI());
         }
@@ -86,6 +84,7 @@ public class GameController {
 
         game.setGameConfig(gameConfig);
         game.setPhase(Phase.READY);
+        game.getPlayersReady().clear();
         game = repositories.save(game);
         LOGGER.info("New game config set: {}", game);
 
@@ -112,22 +111,17 @@ public class GameController {
             }
     )
     public ResponseEntity<GenericApiResponse> joinGame(@ApiParam(value = "Game ID must be a positive Integer")
-                                                       @PathVariable(name = "gameId", value = "gameId") String gameId,
+                                                       @PathVariable(name = "gameId", value = "gameId") Long gameId,
                                                        HttpServletRequest request) {
         Utils.logRequest(LOGGER, request);
         Game game;
         HttpStatus re = HttpStatus.OK;
-        if (gameId == null || gameId.isEmpty()) {
+        if (gameId == null) {
             game = repositories.save(new Game());
             LOGGER.info("Created new Game {}", game);
             re = HttpStatus.CREATED;
         } else {
-            Validator validator = ESAPI.validator();
-            if (!validator.isValidNumber("gameId", gameId, 0, Long.MAX_VALUE, false)) {
-                LOGGER.warn("Invalid Game ID '{}' from request {}", gameId, request.toString());
-                return GenericApiResponse.buildResponse(HttpStatus.BAD_REQUEST, "Invalid Game ID", request.getRequestURI());
-            }
-            Optional<Game> optionalGame = repositories.loadGame(Long.parseLong(gameId));
+            Optional<Game> optionalGame = repositories.loadGame(gameId);
             if (optionalGame.isEmpty()) {
                 LOGGER.warn("Game not found: {}", gameId);
                 return GenericApiResponse.buildResponse(HttpStatus.NOT_FOUND, "Game ID '" + gameId + "' not found.", request.getRequestURI());
@@ -141,7 +135,7 @@ public class GameController {
 
             if (!game.getPlayers().contains(player)) {
                 LOGGER.error("FIXME! Inconsistent state! Player {} not listed in game {}", player, game);
-                game.getPlayers().add(player);
+                game.join(player);
                 game = repositories.save(game);
                 LOGGER.debug("Fixed game {}", game);
             }
@@ -150,10 +144,141 @@ public class GameController {
         player.getGames().add(game);
         player = repositories.save(player);
 
-        game.getPlayers().add(player);
+        game.join(player);
         game = repositories.save(game);
 
         LOGGER.info("Player {} joined Game {}", player, game);
         return GenericApiResponse.buildResponse(re, game.getId().toString(), request.getRequestURI());
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Board of this player in given game.", response = Board.class),
+            @ApiResponse(code = 404, message = "No board for this player in this game.", response = GenericApiResponse.class)
+    })
+    @GetMapping(value = "/game/{gameId}/board", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get this players Board for the given game.")
+    public ResponseEntity<Board> getBoard(
+            @PathVariable("gameId") Long gameId,
+            HttpServletRequest request
+    ) {
+        Pair<Game, Player> gameAndPlayer = getGameAndPlayer(gameId, request);
+        Optional<Board> optionalBoard = gameAndPlayer.getFirst().getBoards().stream()
+                .filter(x -> x.getOwner() == gameAndPlayer.getSecond())
+                .findAny();
+        if (optionalBoard.isEmpty()) {
+            throw new PlayerNotInGameException("Player " + gameAndPlayer.getSecond().getId() + " not playing in Game " + gameId);
+        }
+        return ResponseEntity.ok(optionalBoard.get());
+    }
+
+    // actuall rolling
+    private DiceFace roll(Dice dice) {
+        if (dice == null)
+            return null;
+
+        //TODO !
+        return null;
+    }
+
+    // advance to rolling phase - do initial rolls
+    private void startRolling(Game game) {
+        assert game.getPhase() == Phase.SETUP || game.getPhase() == Phase.END_OF_TURN;
+
+        game.setPhase(Phase.ROLLING);
+        for (Board board : game.getBoards()) {
+            for (Building building : board.getPlacedBuildings()) {
+                building.setLastRolled(roll(building.getBuildingType().getDice()));
+            }
+        }
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Added player to the ready list.", response = GenericApiResponse.class),
+            @ApiResponse(code = 208, message = "Player already set to ready", response = GenericApiResponse.class),
+            @ApiResponse(code = 403, message = "Player is not ready! (See message.)", response = GenericApiResponse.class)
+    })
+    @PostMapping(value = "/game/{gameId}/ready", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(
+            value = "Call to indicate that you are ready to advance to the next game phase."
+    )
+    public ResponseEntity<GenericApiResponse> ready(
+            @PathVariable("gameId") Long gameId,
+            HttpServletRequest request
+    ) {
+        Pair<Game, Player> gameAndPlayer = getGameAndPlayer(gameId, request);
+        Game game = gameAndPlayer.getFirst();
+        Player player = gameAndPlayer.getSecond();
+        if (game.getPlayersReady().contains(player.getId())) {
+            LOGGER.warn("Player is already ready. This is likely an error in front or backend. Game: {}", game);
+            return GenericApiResponse.buildResponse(HttpStatus.ALREADY_REPORTED, "Already set to ready.", request.getRequestURI());
+        }
+
+        // if there are available buildings left -> not ready!
+        if (game.getBoards().stream()
+                .filter(x -> x.getOwner().equals(player)).findAny()
+                .orElseThrow(() -> new BugFoundException("Players Board not in game."))
+                .getAvailableBuildings().size() > 0
+        ) {
+            LOGGER.debug("Player {} has not placed all his available buildings in game {}", player.getId(), game);
+            return GenericApiResponse.buildResponse(HttpStatus.FORBIDDEN, "You need to place all available buildings first.", request.getRequestURI());
+        }
+
+        LOGGER.debug("Player {} readied in game {}", player.getId(), game);
+        game.getPlayersReady().add(player.getId());
+
+        if (game.getPlayersReady().size() == game.getPlayers().size()) {
+            LOGGER.debug("All players ready in {}. Advance!", game);
+            switch (game.getPhase()) {
+                case READY -> game.setPhase(Phase.SETUP);
+                case SETUP -> startRolling(game);
+                default -> LOGGER.error("All players ready in a phase which does not support waiting for all players! {}", game);
+            }
+            game.getPlayersReady().clear();
+        }
+
+        game = repositories.save(game);
+        LOGGER.debug("Saved new state {}", game);
+
+        return GenericApiResponse.buildResponse(HttpStatus.OK, "Player ready", request.getRequestURI());
+    }
+
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Building placed.", response = GenericApiResponse.class),
+            @ApiResponse(code = 403, message = "Placing that building there is not allowed.", response = GenericApiResponse.class)
+    })
+    @ApiOperation(
+            value = "Place a building from the available Buildings list.",
+            notes = "Only allowed during SETUP or BUILDING phase."
+    )
+    @PostMapping(
+            value = "/game/{gameId}/placeBuilding",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<GenericApiResponse> placeBuilding(
+            @PathVariable("gameId") Long gameId,
+            @RequestBody PlaceBuildingCommand placeBuildingCommand,
+            HttpServletRequest request
+    ) {
+        Pair<Game, Player> gameAndPlayer = getGameAndPlayer(gameId, request);
+        if (gameAndPlayer.getFirst().getPhase() != Phase.SETUP && gameAndPlayer.getFirst().getPhase() != Phase.BUILDING) {
+            throw new AgainstTheRulesException("Placing buildings is not allowed in Phase " + gameAndPlayer.getFirst().getPhase());
+        }
+        Board board = getBoard(gameId, request).getBody();
+        assert board != null;
+        Building building = board.getAvailableBuildings().stream()
+                .filter(x -> x.getBuildingType().getId().equals(placeBuildingCommand.getBuildingTypeId()))
+                .findAny()
+                .orElseThrow(() -> new BadRequestException("There is no available building of type " + placeBuildingCommand.getBuildingTypeId()));
+
+        building.setPosition(placeBuildingCommand.getPoint());
+        building.setOrientation(placeBuildingCommand.getOrientation());
+        boolean placed = board.placeBuilding(building);
+        if (!placed) {
+            return GenericApiResponse.buildResponse(HttpStatus.FORBIDDEN, "Can not place this building there!", request.getRequestURI());
+        }
+        Game game = repositories.save(gameAndPlayer.getFirst());
+        return GenericApiResponse.buildResponse(HttpStatus.OK, "Building placed", request.getRequestURI());
     }
 }

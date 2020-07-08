@@ -53,10 +53,18 @@ public class GenericApiResponse {
         return status.getReasonPhrase();
     }
 
+    private static GenericApiResponse buildGenericApiResponse(HttpStatus status, String message, String path) {
+        LOGGER.debug("Building generic API response : ({}, {}, {})", status.toString(), message, path);
+        return new GenericApiResponse(status, message, path);
+    }
 
     public static ResponseEntity<GenericApiResponse> buildResponse(HttpStatus status, String message, String path) {
-        LOGGER.debug("Building generic API response : ({}, {}, {})", status.toString(), message, path);
-        return new ResponseEntity<>(new GenericApiResponse(status, message, path), status);
+        return new ResponseEntity<>(buildGenericApiResponse(status, message, path), status);
+    }
+
+    // stupid inner type cast...
+    public static ResponseEntity<Object> buildResponseObject(HttpStatus status, String message, String path) {
+        return new ResponseEntity<>(buildGenericApiResponse(status, message, path), status);
     }
 
     public static ResponseEntity<GenericApiResponse> responseFromStringResponse(ResponseEntity<String> stringResponse, String path) {

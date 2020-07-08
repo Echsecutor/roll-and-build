@@ -1,5 +1,7 @@
 package de.echsecutables.rollandbuild.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.echsecutables.rollandbuild.Utils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,6 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -23,12 +27,12 @@ public class Game {
     @ApiModelProperty(value = "Current Game phase.", example = "ROLLING")
     private Phase phase = Phase.NOT_READY;
 
-    @ApiModelProperty(value = "IDs of players in this game.", example = "[23, 42]")
-    @ManyToMany
-    private List<Player> players = new ArrayList<>();
+    @ApiModelProperty(value = "IDs of players who ready to advance to the next phase.", example = "[23, 42]")
+    private ArrayList<Long> playersReady = new ArrayList<>();
 
-    @ApiModelProperty(value = "ID of the currently active player. Applicable in some phases.", example = "42")
-    private Long activePlayerId;
+    @ApiModelProperty(value = "The currently active player. Applicable in some phases.")
+    @ManyToOne
+    private Player activePlayer;
 
     // Embedded.
     // Contract: for (Board board:boards){ assert (players.contains(board.getOwner())); }
@@ -37,6 +41,32 @@ public class Game {
 
     @ApiModelProperty(value = "The game configuration holds some details of the rules which can be changed per game.")
     @ManyToOne
-    private GameConfig gameConfig;
+    private GameConfig gameConfig = null;
 
+    @Transient
+    @JsonIgnore
+    public void join(Player player) {
+        Board board = Utils.boardFromConfig(gameConfig);
+        board.setOwner(player);
+        this.boards.add(board);
+    }
+
+    @Transient
+    @JsonIgnore
+    public List<Player> getPlayers() {
+        return this.boards.stream().map(Board::getOwner).collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return id.equals(game.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

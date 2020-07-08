@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -33,12 +32,24 @@ public class GameConfig {
             value = "How many buildings of which type can be build during the setup phase before the first round.",
             required = true
     )
-    ArrayList<Pair<Integer, BuildingType>> initialBuildings = new ArrayList<>();
+    private ArrayList<Pair<Integer, BuildingType>> initialBuildings = new ArrayList<>();
 
     @ApiModelProperty(
             value = "How many buildings of which type can be build in total. Initial buildings are NOT subtracted.",
             required = true
     )
-    ArrayList<Pair<Integer, BuildingType>> availableBuildings = new ArrayList<>();
+    private ArrayList<Pair<Integer, BuildingType>> availableBuildings = new ArrayList<>();
+
+
+    @ApiModelProperty(
+            value = "Width of players boards",
+            required = true
+    )
+    private int boardWidth;
+    @ApiModelProperty(
+            value = "Height of players boards",
+            required = true
+    )
+    private int boardHeight;
 
 }

@@ -96,22 +96,29 @@ class GameControllerTest {
                 .apply(sharedHttpSession())
                 .build();
 
+        String reStr;
+        GenericApiResponse re;
+        ObjectMapper mapper = new ObjectMapper();
+
         // join non existing game: 404
-        mockMvc.perform(post("/game/join/42")
+        reStr = mockMvc.perform(post("/game/join/42")
                 .accept(MediaType.ALL))
                 .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
-                .andReturn();
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        // ensure answer is a generic API Response
+        mapper.readValue(reStr, GenericApiResponse.class);
 
         // Create Game
-        String reStr = mockMvc.perform(post("/game/join/")
+        reStr = mockMvc.perform(post("/game/join/")
                 .accept(MediaType.ALL))
                 .andExpect(status().is(201))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        ObjectMapper mapper = new ObjectMapper();
-        GenericApiResponse re = mapper.readValue(reStr, GenericApiResponse.class);
+        re = mapper.readValue(reStr, GenericApiResponse.class);
         Long gameId = Long.parseLong(re.getMessage());
 
         Assert.assertTrue(gameRepoMock.containsKey(gameId));
