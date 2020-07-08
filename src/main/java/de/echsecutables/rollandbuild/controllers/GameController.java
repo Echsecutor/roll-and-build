@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @Api
@@ -176,8 +177,19 @@ public class GameController {
         if (dice == null)
             return null;
 
-        //TODO !
-        return null;
+        int totalNumFaces = 0;
+        for (Pair<Integer, DiceFace> facePair : dice.getNumberOfSidesWithFaces()) {
+            totalNumFaces += facePair.getFirst();
+        }
+        Random r = new Random();
+        int rolled = r.nextInt(totalNumFaces);
+        for (Pair<Integer, DiceFace> facePair : dice.getNumberOfSidesWithFaces()) {
+            rolled -= facePair.getFirst();
+            if (rolled <= 0) {
+                return facePair.getSecond();
+            }
+        }
+        throw new BugFoundException("Error in rolling, this must be unreachable.");
     }
 
     // advance to rolling phase - do initial rolls
