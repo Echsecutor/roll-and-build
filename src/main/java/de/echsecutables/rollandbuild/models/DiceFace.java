@@ -18,8 +18,8 @@ public class DiceFace {
     private FaceCombinationType faceCombinationType = FaceCombinationType.SYMBOL;
 
     @ApiModelProperty(value = "if faceCombinationType = SYMBOL, this is the symbol shown. Otherwise ignored.", example = "SWORD")
-    private DiceSymbol diceSymbol;
+    private DiceSymbol diceSymbol = null;
 
     @ApiModelProperty(value = "if faceCombinationType != SYMBOL, these two faces are combined in the defined way. Otherwise ignored.")
-    private Pair<DiceFace, DiceFace> combination;
+    private Pair<DiceFace, DiceFace> combination = null;
 }

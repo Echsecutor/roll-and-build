@@ -2,6 +2,7 @@ package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.controllers.exceptions.*;
+import de.echsecutables.rollandbuild.mechanics.GamePlay;
 import de.echsecutables.rollandbuild.mechanics.GameSetup;
 import de.echsecutables.rollandbuild.models.*;
 import de.echsecutables.rollandbuild.persistence.RepositoryWrapper;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import java.util.Random;
 
 @RestController
 @Api
@@ -174,26 +174,6 @@ public class GameController {
         return ResponseEntity.ok(optionalBoard.get());
     }
 
-    // actuall rolling
-    private DiceFace roll(Dice dice) {
-        if (dice == null)
-            return null;
-
-        int totalNumFaces = 0;
-        for (Pair<Integer, DiceFace> facePair : dice.getNumberOfSidesWithFaces()) {
-            totalNumFaces += facePair.getFirst();
-        }
-        Random r = new Random();
-        int rolled = r.nextInt(totalNumFaces);
-        for (Pair<Integer, DiceFace> facePair : dice.getNumberOfSidesWithFaces()) {
-            rolled -= facePair.getFirst();
-            if (rolled <= 0) {
-                return facePair.getSecond();
-            }
-        }
-        throw new BugFoundException("Error in rolling, this must be unreachable.");
-    }
-
     // advance to rolling phase - do initial rolls
     private void startRolling(Game game) {
         assert game.getPhase() == Phase.SETUP || game.getPhase() == Phase.END_OF_TURN;
@@ -201,7 +181,7 @@ public class GameController {
         game.setPhase(Phase.ROLLING);
         for (Board board : game.getBoards()) {
             for (Building building : board.getPlacedBuildings()) {
-                building.setLastRolled(roll(building.getBuildingType().getDice()));
+                building.setLastRolled(GamePlay.roll(building.getBuildingType().getDice()));
             }
         }
     }
