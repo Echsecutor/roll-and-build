@@ -2,6 +2,7 @@ package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.controllers.exceptions.*;
+import de.echsecutables.rollandbuild.mechanics.GameSetup;
 import de.echsecutables.rollandbuild.models.*;
 import de.echsecutables.rollandbuild.persistence.RepositoryWrapper;
 import io.swagger.annotations.*;
@@ -83,7 +84,7 @@ public class GameController {
 
         LOGGER.debug("Setting Config {} for game {}", gameConfig, game);
 
-        game.setGameConfig(gameConfig);
+        GameSetup.loadGameConfig(game, gameConfig);
         game.setPhase(Phase.READY);
         game.getPlayersReady().clear();
         game = repositories.save(game);
@@ -91,6 +92,7 @@ public class GameController {
 
         return GenericApiResponse.buildResponse(HttpStatus.OK, "Config accepted, Phase advanced to " + game.getPhase(), request.getRequestURI());
     }
+
 
     @PostMapping(value = "/game/join", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a new game game.")
