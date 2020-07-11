@@ -1,7 +1,7 @@
 package de.echsecutables.rollandbuild.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.echsecutables.rollandbuild.Utils;
+import de.echsecutables.rollandbuild.mechanics.GameSetup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,7 +35,6 @@ public class Game {
     private Player activePlayer;
 
     // Embedded.
-    // Contract: for (Board board:boards){ assert (players.contains(board.getOwner())); }
     @ApiModelProperty(value = "The players' boards in this game.")
     private ArrayList<Board> boards = new ArrayList<>();
 
@@ -46,13 +45,15 @@ public class Game {
     @Transient
     @JsonIgnore
     public void join(Player player) {
-        Board board = Utils.boardFromConfig(gameConfig);
+        Board board = GameSetup.boardFromConfig(gameConfig);
         board.setOwner(player);
         this.boards.add(board);
     }
 
     @Transient
     @JsonIgnore
+    // This ensures the Contract: for (Board board:boards){ assert (players.contains(board.getOwner())); }
+    // + DRY
     public List<Player> getPlayers() {
         return this.boards.stream().map(Board::getOwner).collect(Collectors.toUnmodifiableList());
     }

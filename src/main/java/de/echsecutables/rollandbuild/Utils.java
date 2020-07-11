@@ -34,19 +34,6 @@ public class Utils {
         }
     }
 
-    public static Board boardFromConfig(GameConfig gameConfig) {
-        Board board = new Board();
-        if (gameConfig == null) {
-            return board;
-        }
-
-        board.setShape(new Shape(gameConfig.getBoardWidth(), gameConfig.getBoardHeight()));
-        board.setCounters(gameConfig.getInitialCounters().clone());
-        board.setAvailableBuildings(Utils.numberOfBuildingsToBuildingList(gameConfig.getInitialBuildings()));
-
-        return board;
-    }
-
     public static List<Building> numberOfBuildingsToBuildingList(List<Pair<Integer, BuildingType>> numberOfBuildings) {
         List<Building> re = new ArrayList<>();
         for (Pair<Integer, BuildingType> typePair : numberOfBuildings) {
