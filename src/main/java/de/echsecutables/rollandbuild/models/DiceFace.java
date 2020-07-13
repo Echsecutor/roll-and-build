@@ -22,4 +22,5 @@ public class DiceFace {
 
     @ApiModelProperty(value = "if faceCombinationType != SYMBOL, these two faces are combined in the defined way. Otherwise ignored.")
     private Pair<DiceFace, DiceFace> combination = null;
+
 }

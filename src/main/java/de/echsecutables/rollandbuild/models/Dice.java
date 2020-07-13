@@ -1,15 +1,13 @@
 package de.echsecutables.rollandbuild.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 
 @Data
@@ -26,4 +24,9 @@ public class Dice {
     @ApiModelProperty(value = "Multiple sides of the dice may show the same face. The total number of sides of the dice is obtained by summing.")
     private ArrayList<Pair<Integer, DiceFace>> numberOfSidesWithFaces = new ArrayList<>();
 
+    @Transient
+    @JsonIgnore
+    public void addSides(int number, DiceFace diceFace) {
+        this.numberOfSidesWithFaces.add(Pair.of(number, diceFace));
+    }
 }
