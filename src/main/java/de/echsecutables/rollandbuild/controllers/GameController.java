@@ -40,7 +40,7 @@ public class GameController {
         Optional<Game> optionalGame = repositories.loadGame(gameId);
         if (optionalGame.isEmpty()) {
             LOGGER.debug("Game not found {}", gameId);
-            throw new GameNotFoundException("Game " + gameId + " not found");
+            throw new NotFoundException("Game " + gameId + " not found");
         }
         return Pair.of(optionalGame.get(), player);
     }

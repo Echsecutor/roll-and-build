@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-// Game with given ID does not exist
+// persistent object with given ID does not exist
 @ResponseStatus(NOT_FOUND)
-public class GameNotFoundException extends PlayerNotInGameException {
-    public GameNotFoundException(String message) {
+public class NotFoundException extends PlayerNotInGameException {
+    public NotFoundException(String message) {
         super(message);
     }
 }

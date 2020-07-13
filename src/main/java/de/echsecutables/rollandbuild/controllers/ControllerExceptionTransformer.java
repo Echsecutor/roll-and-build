@@ -29,7 +29,7 @@ public class ControllerExceptionTransformer extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(BugFoundException.class)
     public ResponseEntity<GenericApiResponse> handleBugFoundException(BugFoundException ex, WebRequest request) {
-        LOGGER.error("FIXME! BugFoundException caught: {}", ex.toString());
+        LOGGER.debug("Caught: {}", ex.toString());
         return GenericApiResponse.buildResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Please report this error at https://github.com/Echsecutor/roll-and-build/issues \n " + ex.getMessage(),
@@ -37,32 +37,32 @@ public class ControllerExceptionTransformer extends ResponseEntityExceptionHandl
         );
     }
 
-    @ExceptionHandler(GameNotFoundException.class)
-    public ResponseEntity<GenericApiResponse> handleBadRequestException(GameNotFoundException ex, WebRequest request) {
-        LOGGER.debug("GameNotFoundException caught: {}", ex.toString());
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<GenericApiResponse> handleNotFoundException(NotFoundException ex, WebRequest request) {
+        LOGGER.debug("Caught: {}", ex.toString());
         return GenericApiResponse.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ((ServletWebRequest) request).getRequest().getRequestURI());
     }
 
     @ExceptionHandler(PlayerNotInGameException.class)
     public ResponseEntity<GenericApiResponse> handlePlayerNotInGameException(PlayerNotInGameException ex, WebRequest request) {
-        LOGGER.debug("PlayerNotInGameException caught: {}", ex.toString());
+        LOGGER.debug("Caught: {}", ex.toString());
         return GenericApiResponse.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ((ServletWebRequest) request).getRequest().getRequestURI());
     }
 
     @ExceptionHandler(AgainstTheRulesException.class)
     public ResponseEntity<GenericApiResponse> handleAgainstTheRulesException(AgainstTheRulesException ex, WebRequest request) {
-        LOGGER.debug("AgainstTheRulesException caught: {}", ex.toString());
+        LOGGER.debug("Caught: {}", ex.toString());
         return GenericApiResponse.buildResponse(HttpStatus.FORBIDDEN, ex.getMessage(), ((ServletWebRequest) request).getRequest().getRequestURI());
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<GenericApiResponse> handleBadRequestException(BadRequestException ex, WebRequest request) {
-        LOGGER.debug("BadRequestException caught: {}", ex.toString());
+        LOGGER.debug("Caught: {}", ex.toString());
         return GenericApiResponse.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ((ServletWebRequest) request).getRequest().getRequestURI());
     }
 
     private ResponseEntity<Object> exceptionToGenericApiResponse(Exception ex, HttpStatus status, WebRequest request) {
-        LOGGER.debug("Exception caught: {}", ex.toString());
+        LOGGER.debug("Caught: {}", ex.toString());
         return GenericApiResponse.buildResponseObject(status, ex.getMessage(), ((ServletWebRequest) request).getRequest().getRequestURI());
     }
 

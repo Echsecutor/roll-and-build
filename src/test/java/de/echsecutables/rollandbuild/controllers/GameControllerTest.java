@@ -1,8 +1,9 @@
 package de.echsecutables.rollandbuild.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.echsecutables.rollandbuild.models.Game;
-import de.echsecutables.rollandbuild.models.Player;
+import de.echsecutables.rollandbuild.models.*;
+import de.echsecutables.rollandbuild.persistence.BuildingTypeRepository;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
 import org.assertj.core.util.Lists;
@@ -50,6 +51,9 @@ class GameControllerTest {
     @MockBean
     GameRepository gameRepository;
 
+    @MockBean
+    BuildingTypeRepository buildingTypeRepository;
+
     private final Map<String, Player> playerRepoMock = new HashMap<>();
     private final Map<Long, Game> gameRepoMock = new HashMap<>();
 
@@ -83,9 +87,32 @@ class GameControllerTest {
 
     }
 
+    private GameConfig exampleGameConfig() throws JsonProcessingException {
+        GameConfig gameConfig = new GameConfig();
+
+        gameConfig.setBoardHeight(25);
+        gameConfig.setBoardWidth(25);
+
+        int[] initialCounters = new int[Counter.values().length];
+        initialCounters[Counter.CROP.index()] = 5;
+        initialCounters[Counter.CULTURE.index()] = 0;
+        initialCounters[Counter.DISASTER.index()] = 0;
+        initialCounters[Counter.GOLD.index()] = 0;
+        initialCounters[Counter.STONE.index()] = 2;
+        initialCounters[Counter.WOOD.index()] = 4;
+        gameConfig.setInitialCounters(initialCounters);
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(gameConfig));
+        return null; //TODO
+    }
+
 
     @Test
     void setGameConfig() {
+//todo
+
     }
 
     @Test

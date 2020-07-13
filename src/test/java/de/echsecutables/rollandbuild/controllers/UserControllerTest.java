@@ -2,6 +2,7 @@ package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.models.Game;
 import de.echsecutables.rollandbuild.models.Player;
+import de.echsecutables.rollandbuild.persistence.BuildingTypeRepository;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
 import org.assertj.core.util.Lists;
@@ -50,6 +51,9 @@ class UserControllerTest {
 
     @MockBean
     GameRepository gameRepository;
+    @MockBean
+    BuildingTypeRepository buildingTypeRepository;
+
 
     private final Map<String, Player> playerRepoMock = new HashMap<>();
     private final Map<Long, Game> gameRepoMock = new HashMap<>();

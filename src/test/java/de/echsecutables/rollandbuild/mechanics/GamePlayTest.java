@@ -61,7 +61,7 @@ class GamePlayTest {
         }
     }
 
-    // also tests dice factory
+    // also tests dice factory to create some complex faces
     @Test
     void complexDiceRoll() {
         DiceFace disaster = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.CROP, DiceSymbol.DISASTER, DiceSymbol.HAMMER));
