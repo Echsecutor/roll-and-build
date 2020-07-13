@@ -32,6 +32,8 @@ class GamePlayTest {
                 .map(Pair::getSecond)
                 .collect(Collectors.toList());
 
+        Assert.assertTrue(diceFaces.size() > 0);
+
         boolean[] rolled = new boolean[diceFaces.size()];
 
         long seed = 23;
@@ -55,7 +57,7 @@ class GamePlayTest {
             Assert.assertTrue("Rolled non existing face.", found);
         }
         for (boolean faceRolled : rolled) {
-            Assert.assertTrue(faceRolled);
+            Assert.assertTrue("Not all faces where rolled!", faceRolled);
         }
     }
 
