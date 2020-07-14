@@ -10,17 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
-public class Repositories implements RepositoryWrapper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Repositories.class);
+public class GamePlayRepositories {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GamePlayRepositories.class);
 
     @Autowired
     private PlayerRepository playerRepository;
 
     @Autowired
     private GameRepository gameRepository;
-
-    @Autowired
-    private BuildingTypeRepository buildingTypeRepository;
 
     public Player getOrCreatePlayer(String sessionId) {
         List<Player> players = playerRepository
@@ -44,16 +41,6 @@ public class Repositories implements RepositoryWrapper {
 
     public Optional<Game> loadGame(long gameId) {
         return gameRepository.findById(gameId);
-    }
-
-    @Override
-    public Optional<BuildingType> loadBuilding(long id) {
-        return buildingTypeRepository.findById(id);
-    }
-
-    @Override
-    public BuildingType save(BuildingType building) {
-        return buildingTypeRepository.save(building);
     }
 
 }

@@ -2,7 +2,7 @@ package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.models.Player;
-import de.echsecutables.rollandbuild.persistence.RepositoryWrapper;
+import de.echsecutables.rollandbuild.persistence.GamePlayRepositories;
 import io.swagger.annotations.*;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Validator;
@@ -31,13 +31,13 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private RepositoryWrapper repositories;
+    private GamePlayRepositories gamePlayRepositories;
 
     @GetMapping(value = "/player", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get the data for the current user identified by session ID.")
     public ResponseEntity<Player> getPlayerData(HttpServletRequest request) {
         Utils.logRequest(LOGGER, request);
-        return ResponseEntity.ok(repositories.getOrCreatePlayer(request.getSession().getId()));
+        return ResponseEntity.ok(gamePlayRepositories.getOrCreatePlayer(request.getSession().getId()));
     }
 
     @PostMapping(value = "/player/name", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,9 +57,9 @@ public class UserController {
             return GenericApiResponse.buildResponse(HttpStatus.BAD_REQUEST, "Invalid Player Name", request.getRequestURI());
         }
 
-        Player player = repositories.getOrCreatePlayer(request.getSession().getId());
+        Player player = gamePlayRepositories.getOrCreatePlayer(request.getSession().getId());
         player.setName(name);
-        player = repositories.save(player);
+        player = gamePlayRepositories.save(player);
         LOGGER.debug("Changed name for Player: {}", player);
         return GenericApiResponse.buildResponse(HttpStatus.OK, "Name changed to '" + player.getName() + "'", request.getRequestURI());
     }

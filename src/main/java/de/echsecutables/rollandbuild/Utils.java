@@ -1,6 +1,7 @@
 package de.echsecutables.rollandbuild;
 
-import de.echsecutables.rollandbuild.models.*;
+import de.echsecutables.rollandbuild.models.Building;
+import de.echsecutables.rollandbuild.models.BuildingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
@@ -19,7 +21,12 @@ public class Utils {
     }
 
     public static void logRequest(Logger logger, HttpServletRequest request) {
-        logger.trace("[" + request.getSession().getId() + "] " + request.getMethod() + ": " + request.getRequestURI());
+        String body = "";
+        try {
+            body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException ignored) {
+        }
+        logger.trace("[{}] {} : {}\n{}", request.getSession().getId(), request.getMethod(), request.getRequestURI(), body);
     }
 
     // to avoid import org.apache.commons.io.IOUtils;

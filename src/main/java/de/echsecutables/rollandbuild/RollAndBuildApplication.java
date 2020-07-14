@@ -1,7 +1,7 @@
 package de.echsecutables.rollandbuild;
 
-import de.echsecutables.rollandbuild.persistence.Repositories;
-import de.echsecutables.rollandbuild.persistence.RepositoryWrapper;
+import de.echsecutables.rollandbuild.persistence.ConfigRepositories;
+import de.echsecutables.rollandbuild.persistence.GamePlayRepositories;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,12 @@ public class RollAndBuildApplication {
     }
 
     @Bean
-    public RepositoryWrapper getRepositories() {
-        return new Repositories();
+    public GamePlayRepositories getRepositories() {
+        return new GamePlayRepositories();
+    }
+
+    @Bean
+    public ConfigRepositories getConfigRepositories() {
+        return new ConfigRepositories();
     }
 }
