@@ -9,6 +9,7 @@ import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,5 +29,11 @@ public class Dice {
     @JsonIgnore
     public void addSides(int number, DiceFace diceFace) {
         this.numberOfSidesWithFaces.add(Pair.of(number, diceFace));
+    }
+
+    public Dice(List<DiceFace> faces) {
+        for (DiceFace diceFace : faces) {
+            this.addSides(1, diceFace);
+        }
     }
 }

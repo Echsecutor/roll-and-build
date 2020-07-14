@@ -24,7 +24,7 @@ public class Utils {
         String body = "";
         try {
             body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
         }
         logger.trace("[{}] {} : {}\n{}", request.getSession().getId(), request.getMethod(), request.getRequestURI(), body);
     }

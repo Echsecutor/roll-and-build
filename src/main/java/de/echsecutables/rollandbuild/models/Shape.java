@@ -57,6 +57,8 @@ public class Shape {
         return occupied[y][x];
     }
 
+    // 0<=x<width
+    // 0<=y<height
     public void setOccupied(int x, int y, boolean value) throws IllegalArgumentException {
         assertCoordinatesInRange(x, y);
         occupied[y][x] = value;

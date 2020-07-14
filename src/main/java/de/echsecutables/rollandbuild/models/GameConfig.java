@@ -1,14 +1,12 @@
 package de.echsecutables.rollandbuild.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.util.Pair;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 
 @Data
@@ -51,5 +49,17 @@ public class GameConfig {
             required = true
     )
     private int boardHeight;
+
+    @Transient
+    @JsonIgnore
+    public void addAvailableBuilding(int num, BuildingType buildingType) {
+        this.availableBuildings.add(Pair.of(num, buildingType));
+    }
+
+    @Transient
+    @JsonIgnore
+    public void addInitialBuilding(int num, BuildingType buildingType) {
+        this.initialBuildings.add(Pair.of(num, buildingType));
+    }
 
 }
