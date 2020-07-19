@@ -10,8 +10,8 @@
   ],
   "initialBuildings": [
     {
-      "first": 2,
-      "second": {
+      "number": 2,
+      "buildingType": {
         "id": null,
         "shape": {
           "occupied": [
@@ -25,161 +25,68 @@
           "id": null,
           "numberOfSidesWithFaces": [
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "CROP",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      }
-                    }
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "CROP",
+                  "CROP",
+                  "CROP"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "HAMMER",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "HAMMER",
-                    "combination": null
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "HAMMER",
+                  "HAMMER"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "STONE",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "STONE",
-                    "combination": null
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "STONE",
+                  "STONE"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "WOOD",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "WOOD",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "WOOD",
-                        "combination": null
-                      }
-                    }
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "WOOD",
+                  "WOOD",
+                  "WOOD"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "OR",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      }
-                    }
-                  },
-                  "second": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "STONE",
-                    "combination": null
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "CROP",
+                  "CROP"
+                ],
+                "choice": [
+                  "STONE"
+                ]
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "DISASTER",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "WOOD",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "HAMMER",
-                        "combination": null
-                      }
-                    }
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "DISASTER",
+                  "WOOD",
+                  "HAMMER"
+                ],
+                "choice": null
               }
             }
           ]
@@ -197,8 +104,8 @@
   ],
   "availableBuildings": [
     {
-      "first": 10,
-      "second": {
+      "number": 10,
+      "buildingType": {
         "id": null,
         "shape": {
           "occupied": [
@@ -212,161 +119,68 @@
           "id": null,
           "numberOfSidesWithFaces": [
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "CROP",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      }
-                    }
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "CROP",
+                  "CROP",
+                  "CROP"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "HAMMER",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "HAMMER",
-                    "combination": null
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "HAMMER",
+                  "HAMMER"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "STONE",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "STONE",
-                    "combination": null
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "STONE",
+                  "STONE"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "WOOD",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "WOOD",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "WOOD",
-                        "combination": null
-                      }
-                    }
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "WOOD",
+                  "WOOD",
+                  "WOOD"
+                ],
+                "choice": null
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "OR",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "CROP",
-                        "combination": null
-                      }
-                    }
-                  },
-                  "second": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "STONE",
-                    "combination": null
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "CROP",
+                  "CROP"
+                ],
+                "choice": [
+                  "STONE"
+                ]
               }
             },
             {
-              "first": 1,
-              "second": {
-                "faceCombinationType": "AND",
-                "diceSymbol": null,
-                "combination": {
-                  "first": {
-                    "faceCombinationType": "SYMBOL",
-                    "diceSymbol": "DISASTER",
-                    "combination": null
-                  },
-                  "second": {
-                    "faceCombinationType": "AND",
-                    "diceSymbol": null,
-                    "combination": {
-                      "first": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "WOOD",
-                        "combination": null
-                      },
-                      "second": {
-                        "faceCombinationType": "SYMBOL",
-                        "diceSymbol": "HAMMER",
-                        "combination": null
-                      }
-                    }
-                  }
-                }
+              "number": 1,
+              "diceFace": {
+                "rolled": [
+                  "DISASTER",
+                  "WOOD",
+                  "HAMMER"
+                ],
+                "choice": null
               }
             }
           ]

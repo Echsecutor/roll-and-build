@@ -1,6 +1,9 @@
 package de.echsecutables.rollandbuild.mechanics;
 
-import de.echsecutables.rollandbuild.models.*;
+import de.echsecutables.rollandbuild.models.Dice;
+import de.echsecutables.rollandbuild.models.DiceFace;
+import de.echsecutables.rollandbuild.models.DiceSymbol;
+import de.echsecutables.rollandbuild.models.NumberOfDiceFaces;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +15,8 @@ class GamePlayTest {
     @Test
     void roll2Sided() {
 
-        DiceFace disaster = DiceFaceFactory.singleSymbol(DiceSymbol.DISASTER);
-        DiceFace crop = DiceFaceFactory.singleSymbol(DiceSymbol.CROP);
+        DiceFace disaster = new DiceFace(List.of(DiceSymbol.DISASTER));
+        DiceFace crop = new DiceFace(List.of(DiceSymbol.CROP));
 
         Dice dice = new Dice();
         dice.addSides(1, disaster);
@@ -60,12 +63,9 @@ class GamePlayTest {
     // also tests dice factory to create some complex faces
     @Test
     void complexDiceRoll() {
-        DiceFace disaster = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.CROP, DiceSymbol.DISASTER, DiceSymbol.HAMMER));
-        DiceFace choice = DiceFaceFactory.or(
-                DiceFaceFactory.multiSymbol(List.of(DiceSymbol.CROP, DiceSymbol.CROP)),
-                DiceFaceFactory.multiSymbol(List.of(DiceSymbol.HAMMER, DiceSymbol.HAMMER))
-        );
-        DiceFace crop = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.CROP, DiceSymbol.CROP, DiceSymbol.CROP));
+        DiceFace disaster = new DiceFace(List.of(DiceSymbol.CROP, DiceSymbol.DISASTER, DiceSymbol.HAMMER));
+        DiceFace choice = new DiceFace(List.of(DiceSymbol.CROP, DiceSymbol.CROP), List.of(DiceSymbol.HAMMER, DiceSymbol.HAMMER));
+        DiceFace crop = new DiceFace(List.of(DiceSymbol.CROP, DiceSymbol.CROP, DiceSymbol.CROP));
 
         Dice dice = new Dice();
         dice.addSides(1, disaster);

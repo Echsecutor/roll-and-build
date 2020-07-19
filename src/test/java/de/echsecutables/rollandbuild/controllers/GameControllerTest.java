@@ -105,15 +105,13 @@ class GameControllerTest {
         initialCounters[Counter.WOOD.index()] = 4;
         gameConfig.setInitialCounters(initialCounters);
 
-        DiceFace farmersDiceFace1 = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.CROP, DiceSymbol.CROP, DiceSymbol.CROP));
-        DiceFace farmersDiceFace2 = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.HAMMER, DiceSymbol.HAMMER));
-        DiceFace farmersDiceFace3 = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.STONE, DiceSymbol.STONE));
-        DiceFace farmersDiceFace4 = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.WOOD, DiceSymbol.WOOD, DiceSymbol.WOOD));
-        DiceFace farmersDiceFace5 = DiceFaceFactory.or(
-                DiceFaceFactory.multiSymbol(List.of(DiceSymbol.CROP, DiceSymbol.CROP)),
-                DiceFaceFactory.singleSymbol(DiceSymbol.STONE)
-        );
-        DiceFace farmersDiceFace6 = DiceFaceFactory.multiSymbol(List.of(DiceSymbol.DISASTER, DiceSymbol.WOOD, DiceSymbol.HAMMER));
+        DiceFace farmersDiceFace1 = new DiceFace(List.of(DiceSymbol.CROP, DiceSymbol.CROP, DiceSymbol.CROP));
+        DiceFace farmersDiceFace2 = new DiceFace(List.of(DiceSymbol.HAMMER, DiceSymbol.HAMMER));
+        DiceFace farmersDiceFace3 = new DiceFace(List.of(DiceSymbol.STONE, DiceSymbol.STONE));
+        DiceFace farmersDiceFace4 = new DiceFace(List.of(DiceSymbol.WOOD, DiceSymbol.WOOD, DiceSymbol.WOOD));
+        DiceFace farmersDiceFace5 = new DiceFace(List.of(DiceSymbol.CROP, DiceSymbol.CROP), List.of(DiceSymbol.STONE));
+        DiceFace farmersDiceFace6 = new DiceFace(List.of(DiceSymbol.DISASTER, DiceSymbol.WOOD, DiceSymbol.HAMMER));
+
         Dice farmerDice = new Dice(List.of(farmersDiceFace1, farmersDiceFace2, farmersDiceFace3, farmersDiceFace4, farmersDiceFace5, farmersDiceFace6));
 
 
