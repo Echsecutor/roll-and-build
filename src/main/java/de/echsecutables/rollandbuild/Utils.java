@@ -1,10 +1,9 @@
 package de.echsecutables.rollandbuild;
 
 import de.echsecutables.rollandbuild.models.Building;
-import de.echsecutables.rollandbuild.models.BuildingType;
+import de.echsecutables.rollandbuild.models.NumberOfBuildingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.util.Pair;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -41,11 +40,11 @@ public class Utils {
         }
     }
 
-    public static List<Building> numberOfBuildingsToBuildingList(List<Pair<Integer, BuildingType>> numberOfBuildings) {
+    public static List<Building> numberOfBuildingsToBuildingList(List<NumberOfBuildingType> numberOfBuildings) {
         List<Building> re = new ArrayList<>();
-        for (Pair<Integer, BuildingType> typePair : numberOfBuildings) {
-            for (int i = 0; i < typePair.getFirst(); i++) {
-                re.add(new Building(typePair.getSecond()));
+        for (NumberOfBuildingType typePair : numberOfBuildings) {
+            for (int i = 0; i < typePair.getNumber(); i++) {
+                re.add(new Building(typePair.getBuildingType()));
             }
         }
         return re;

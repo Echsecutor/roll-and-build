@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +26,7 @@ public class BuildingType {
     private Dice dice = null;
 
     @ApiModelProperty(value = "Costs to build this building type.")
-    private HashMap<Counter, Integer> costs = new HashMap<>();
+    private int[] costs = new int[Counter.values().length];
 
     public BuildingType(Shape shape) {
         this.shape = shape;

@@ -1,12 +1,8 @@
 package de.echsecutables.rollandbuild.mechanics;
 
-import de.echsecutables.rollandbuild.models.Dice;
-import de.echsecutables.rollandbuild.models.DiceFace;
-import de.echsecutables.rollandbuild.models.DiceFaceFactory;
-import de.echsecutables.rollandbuild.models.DiceSymbol;
+import de.echsecutables.rollandbuild.models.*;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.util.Pair;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +25,7 @@ class GamePlayTest {
     private void checkAllRolled(Dice dice) {
         List<DiceFace> diceFaces = dice.getNumberOfSidesWithFaces()
                 .stream()
-                .map(Pair::getSecond)
+                .map(NumberOfDiceFaces::getDiceFace)
                 .collect(Collectors.toList());
 
         Assert.assertTrue(diceFaces.size() > 0);
@@ -39,7 +35,7 @@ class GamePlayTest {
         long seed = 23;
         int num_sides = dice.getNumberOfSidesWithFaces()
                 .stream()
-                .mapToInt(Pair::getFirst)
+                .mapToInt(NumberOfDiceFaces::getNumber)
                 .sum();
 
         int num_rolls = 3 * num_sides; // do some more serious math if time permits ;)

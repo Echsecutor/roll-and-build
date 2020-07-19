@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,13 +29,13 @@ public class GameConfig {
             value = "How many buildings of which type can be build during the setup phase before the first round.",
             required = true
     )
-    private ArrayList<Pair<Integer, BuildingType>> initialBuildings = new ArrayList<>();
+    private ArrayList<NumberOfBuildingType> initialBuildings = new ArrayList<>();
 
     @ApiModelProperty(
             value = "How many buildings of which type can be build in total. Initial buildings are NOT subtracted.",
             required = true
     )
-    private ArrayList<Pair<Integer, BuildingType>> availableBuildings = new ArrayList<>();
+    private ArrayList<NumberOfBuildingType> availableBuildings = new ArrayList<>();
 
 
     @ApiModelProperty(
@@ -53,13 +52,13 @@ public class GameConfig {
     @Transient
     @JsonIgnore
     public void addAvailableBuilding(int num, BuildingType buildingType) {
-        this.availableBuildings.add(Pair.of(num, buildingType));
+        this.availableBuildings.add(new NumberOfBuildingType(num, buildingType));
     }
 
     @Transient
     @JsonIgnore
     public void addInitialBuilding(int num, BuildingType buildingType) {
-        this.initialBuildings.add(Pair.of(num, buildingType));
+        this.initialBuildings.add(new NumberOfBuildingType(num, buildingType));
     }
 
 }

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,12 +22,12 @@ public class Dice {
     private Long id;
 
     @ApiModelProperty(value = "Multiple sides of the dice may show the same face. The total number of sides of the dice is obtained by summing.")
-    private ArrayList<Pair<Integer, DiceFace>> numberOfSidesWithFaces = new ArrayList<>();
+    private ArrayList<NumberOfDiceFaces> numberOfSidesWithFaces = new ArrayList<>();
 
     @Transient
     @JsonIgnore
     public void addSides(int number, DiceFace diceFace) {
-        this.numberOfSidesWithFaces.add(Pair.of(number, diceFace));
+        this.numberOfSidesWithFaces.add(new NumberOfDiceFaces(number, diceFace));
     }
 
     public Dice(List<DiceFace> faces) {

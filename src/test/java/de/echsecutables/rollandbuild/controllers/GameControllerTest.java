@@ -124,7 +124,7 @@ class GameControllerTest {
         BuildingType farm = new BuildingType();
         farm.setDice(farmerDice);
         farm.setShape(farmShape);
-        farm.getCosts().put(Counter.WOOD, 2);
+        farm.getCosts()[Counter.WOOD.index()] = 2;
 
         gameConfig.addAvailableBuilding(10, farm);
         gameConfig.addInitialBuilding(2, farm);

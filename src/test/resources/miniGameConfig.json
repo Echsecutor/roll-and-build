@@ -1,0 +1,387 @@
+{
+  "id": null,
+  "initialCounters": [
+    5,
+    4,
+    2,
+    0,
+    0,
+    0
+  ],
+  "initialBuildings": [
+    {
+      "first": 2,
+      "second": {
+        "id": null,
+        "shape": {
+          "occupied": [
+            [
+              true,
+              true
+            ]
+          ]
+        },
+        "dice": {
+          "id": null,
+          "numberOfSidesWithFaces": [
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "CROP",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "HAMMER",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "HAMMER",
+                    "combination": null
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "STONE",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "STONE",
+                    "combination": null
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "WOOD",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "WOOD",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "WOOD",
+                        "combination": null
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "OR",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      }
+                    }
+                  },
+                  "second": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "STONE",
+                    "combination": null
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "DISASTER",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "WOOD",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "HAMMER",
+                        "combination": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "costs": [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "availableBuildings": [
+    {
+      "first": 10,
+      "second": {
+        "id": null,
+        "shape": {
+          "occupied": [
+            [
+              true,
+              true
+            ]
+          ]
+        },
+        "dice": {
+          "id": null,
+          "numberOfSidesWithFaces": [
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "CROP",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "HAMMER",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "HAMMER",
+                    "combination": null
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "STONE",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "STONE",
+                    "combination": null
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "WOOD",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "WOOD",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "WOOD",
+                        "combination": null
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "OR",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "CROP",
+                        "combination": null
+                      }
+                    }
+                  },
+                  "second": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "STONE",
+                    "combination": null
+                  }
+                }
+              }
+            },
+            {
+              "first": 1,
+              "second": {
+                "faceCombinationType": "AND",
+                "diceSymbol": null,
+                "combination": {
+                  "first": {
+                    "faceCombinationType": "SYMBOL",
+                    "diceSymbol": "DISASTER",
+                    "combination": null
+                  },
+                  "second": {
+                    "faceCombinationType": "AND",
+                    "diceSymbol": null,
+                    "combination": {
+                      "first": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "WOOD",
+                        "combination": null
+                      },
+                      "second": {
+                        "faceCombinationType": "SYMBOL",
+                        "diceSymbol": "HAMMER",
+                        "combination": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "costs": [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "boardWidth": 25,
+  "boardHeight": 25
+}
