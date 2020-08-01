@@ -1,6 +1,5 @@
 package de.echsecutables.rollandbuild.persistence;
 
-import de.echsecutables.rollandbuild.models.BuildingType;
 import de.echsecutables.rollandbuild.models.Game;
 import de.echsecutables.rollandbuild.models.Player;
 import org.slf4j.Logger;
@@ -24,10 +23,16 @@ public class GamePlayRepositories {
                 .findBySessionId(sessionId);
         if (!players.isEmpty()) {
             LOGGER.debug("Found record for player {}", players.get(0));
+            if (players.size() > 1) {
+                LOGGER.error("FIXME! More than one player for sessionId! {}", players);
+            }
             return players.get(0);
         }
         Player player = playerRepository.save(new Player(sessionId));
         LOGGER.debug("Created new record for player {}", player);
+        if (player.getId() == null) {
+            LOGGER.error("FIXME! Player ID must be set when saving! {}", player);
+        }
         return player;
     }
 

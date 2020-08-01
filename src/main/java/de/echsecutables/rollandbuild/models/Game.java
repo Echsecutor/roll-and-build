@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class Game {
 
     @Transient
     @JsonIgnore
-    public void join(Player player) {
+    public void join(@NonNull Long  player) {
         Board board = GameSetup.boardFromConfig(gameConfig);
         board.setOwner(player);
         this.boards.add(board);
@@ -54,8 +55,10 @@ public class Game {
     @JsonIgnore
     // This ensures the Contract: for (Board board:boards){ assert (players.contains(board.getOwner())); }
     // + DRY
-    public List<Player> getPlayers() {
-        return this.boards.stream().map(Board::getOwner).collect(Collectors.toUnmodifiableList());
+    public List<Long> getPlayers() {
+        return this.boards.stream()
+                .map(Board::getOwner)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override

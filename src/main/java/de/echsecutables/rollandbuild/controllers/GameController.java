@@ -138,16 +138,16 @@ public class GameController {
 
             if (!game.getPlayers().contains(player)) {
                 LOGGER.error("FIXME! Inconsistent state! Player {} not listed in game {}", player, game);
-                game.join(player);
+                game.join(player.getId());
                 game = gamePlayRepositories.save(game);
                 LOGGER.debug("Fixed game {}", game);
             }
             return GenericApiResponse.buildResponse(HttpStatus.ALREADY_REPORTED, "Already playing in Game ID '" + gameId + "'.", request.getRequestURI());
         }
-        player.getGames().add(game);
+        player.getGames().add(game.getId());
         player = gamePlayRepositories.save(player);
 
-        game.join(player);
+        game.join(player.getId());
         game = gamePlayRepositories.save(game);
 
         LOGGER.info("Player {} joined Game {}", player, game);
@@ -166,7 +166,7 @@ public class GameController {
     ) {
         Pair<Game, Player> gameAndPlayer = getGameAndPlayer(gameId, request);
         Optional<Board> optionalBoard = gameAndPlayer.getFirst().getBoards().stream()
-                .filter(x -> x.getOwner() == gameAndPlayer.getSecond())
+                .filter(x -> x.getOwner() == gameAndPlayer.getSecond().getId())
                 .findAny();
         if (optionalBoard.isEmpty()) {
             throw new PlayerNotInGameException("Player " + gameAndPlayer.getSecond().getId() + " not playing in Game " + gameId);
