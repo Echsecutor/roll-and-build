@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,9 @@ public class Board {
 
     private int[] counters = new int[Counter.values().length];
 
+    @ManyToOne
     @ApiModelProperty(value = "A board always belongs to a player.")
-    private Long owner;
+    private Player owner;
 
     @ApiModelProperty(value = "Buildings bought and to be placed on this board. " +
             "If this List is non-empty, the next action of the owner is to place these buildings.")

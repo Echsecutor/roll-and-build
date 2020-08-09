@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
 public class Player {
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
+    @Transient
+    @Autowired
+    private GameRepository gameRepository;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "Primary Key", example = "42")
@@ -38,10 +42,41 @@ public class Player {
     private String name;
 
     @ApiModelProperty(value = "IDs of games played by this user.")
-    private ArrayList<Long> games = new ArrayList<>();
+    @ManyToMany
+    private List<Game> games = new ArrayList<>();
 
     public Player(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", sessionId='" + sessionId + '\'' +
+                ", name='" + name + '\'' +
+                ", games=" + games.stream().map(Game::getId).map(Object::toString).collect(Collectors.joining(", ", "[", "]")) +
+                '}';
+    }
+
+    @Transient
+    @JsonGetter("games")
+    public List<Long> getGameIds() {
+        return games.stream().map(Game::getId).collect(Collectors.toList());
+    }
+
+    @Transient
+    @JsonSetter("games")
+    // TODO: Test!
+    public void loadGameIds(List<Long> gameIds) {
+        for (Long id : gameIds) {
+            Optional<Game> game = gameRepository.findById(id);
+            if (game.isPresent()) {
+                games.add(game.get());
+            } else {
+                LOGGER.warn("Game {} not in repository. Ignored in JSON deserialization.", id);
+            }
+        }
     }
 
     @Override

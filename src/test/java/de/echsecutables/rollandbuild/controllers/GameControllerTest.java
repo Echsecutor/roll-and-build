@@ -66,7 +66,6 @@ class GameControllerTest {
         });
         Mockito.when(playerRepository.save(ArgumentMatchers.any(Player.class))).thenAnswer(stub -> {
             Player player = stub.getArgument(0);
-            player.setId(42L);
             playerRepoMock.put(player.getSessionId(), player);
             return player;
         });
