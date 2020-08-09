@@ -3,7 +3,6 @@ package de.echsecutables.rollandbuild.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.echsecutables.rollandbuild.models.*;
-import de.echsecutables.rollandbuild.persistence.ConfigRepositories;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
 import org.assertj.core.util.Lists;
@@ -53,9 +52,6 @@ class GameControllerTest {
 
     @MockBean
     GameRepository gameRepository;
-
-    @MockBean
-    ConfigRepositories configRepositories;
 
     private final Map<String, Player> playerRepoMock = new HashMap<>();
     private final Map<Long, Game> gameRepoMock = new HashMap<>();
@@ -130,6 +126,7 @@ class GameControllerTest {
 
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(mapper.writeValueAsString(gameConfig));
+
 
         return gameConfig;
     }

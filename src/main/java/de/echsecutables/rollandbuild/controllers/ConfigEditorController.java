@@ -4,7 +4,8 @@ import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.controllers.exceptions.NotFoundException;
 import de.echsecutables.rollandbuild.models.BuildingType;
 import de.echsecutables.rollandbuild.models.Dice;
-import de.echsecutables.rollandbuild.persistence.ConfigRepositories;
+import de.echsecutables.rollandbuild.persistence.BuildingTypeRepository;
+import de.echsecutables.rollandbuild.persistence.DiceRepository;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,10 @@ public class ConfigEditorController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigEditorController.class);
 
     @Autowired
-    ConfigRepositories configRepositories;
+    BuildingTypeRepository buildingTypeRepository;
+
+    @Autowired
+    DiceRepository diceRepository;
 
     @GetMapping(value = "/Config/BuildingType/{buildingTypeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(
@@ -41,7 +45,7 @@ public class ConfigEditorController {
             HttpServletRequest request
     ) {
         Utils.logRequest(LOGGER, request);
-        Optional<BuildingType> optionalBuilding = configRepositories.findBuildingType(buildingTypeId);
+        Optional<BuildingType> optionalBuilding = buildingTypeRepository.findById(buildingTypeId);
         if (optionalBuilding.isEmpty()) {
             throw new NotFoundException("Building ID not found");
         }
@@ -68,13 +72,13 @@ public class ConfigEditorController {
         BuildingType saved;
 
         if (buildingType == null) {
-            saved = configRepositories.save(new BuildingType());
+            saved = buildingTypeRepository.save(new BuildingType());
         } else {
-            if (configRepositories.findBuildingType(buildingType.getId()).isEmpty()) {
+            if (buildingTypeRepository.findById(buildingType.getId()).isEmpty()) {
                 throw new NotFoundException("Building Type " + buildingType.getId() + " does not exist. " +
                         "Post an empty request body to create a new building type.");
             }
-            saved = configRepositories.save(buildingType);
+            saved = buildingTypeRepository.save(buildingType);
         }
         LOGGER.debug("Saved building type {}", saved);
         return ResponseEntity.ok(saved);
@@ -92,7 +96,7 @@ public class ConfigEditorController {
             HttpServletRequest request
     ) {
         Utils.logRequest(LOGGER, request);
-        Optional<Dice> optionalDice = configRepositories.findDice(diceId);
+        Optional<Dice> optionalDice = diceRepository.findById(diceId);
         if (optionalDice.isEmpty()) {
             throw new NotFoundException("Dice ID not found");
         }
@@ -119,13 +123,13 @@ public class ConfigEditorController {
         Dice saved;
 
         if (dice == null) {
-            saved = configRepositories.save(new Dice());
+            saved = diceRepository.save(new Dice());
         } else {
-            if (configRepositories.findDice(dice.getId()).isEmpty()) {
+            if (diceRepository.findById(dice.getId()).isEmpty()) {
                 throw new NotFoundException("Dice id " + dice.getId() + " does not exist. " +
                         "Post an empty request to create a new dice.");
             }
-            saved = configRepositories.save(dice);
+            saved = diceRepository.save(dice);
         }
         LOGGER.debug("Saved dice {}", saved);
         return ResponseEntity.ok(saved);

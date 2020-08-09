@@ -1,6 +1,5 @@
 package de.echsecutables.rollandbuild;
 
-import de.echsecutables.rollandbuild.persistence.ConfigRepositories;
 import de.echsecutables.rollandbuild.persistence.GamePlayRepositories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +25,4 @@ public class RollAndBuildApplication {
         return new GamePlayRepositories();
     }
 
-    @Bean
-    public ConfigRepositories getConfigRepositories() {
-        return new ConfigRepositories();
-    }
 }
