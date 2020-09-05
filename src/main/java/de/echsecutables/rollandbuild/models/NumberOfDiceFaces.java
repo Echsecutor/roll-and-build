@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 @Data
@@ -17,5 +18,6 @@ public class NumberOfDiceFaces {
 
     private int number;
 
+    @ManyToOne
     private DiceFace diceFace;
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 @Data
@@ -20,5 +21,6 @@ public class NumberOfBuildingType {
     private int number;
 
     @ApiModelProperty(value = "Type of Building")
+    @ManyToOne
     private BuildingType buildingType;
 }

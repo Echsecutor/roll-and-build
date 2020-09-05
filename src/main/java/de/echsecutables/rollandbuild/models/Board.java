@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +18,20 @@ import java.util.Optional;
 @Data
 @NoArgsConstructor
 @ApiModel(description = "A concrete Board used by a player in a game to place buildings.")
-@Embeddable
+@Entity
 public class Board {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(value = "Primary Key", required = true, example = "42")
+    private Long id;
 
     @ApiModelProperty(value = "The board shape keeps track of which fields are occupied by buildings in addition to the total width and height.")
     private Shape shape;
 
     @ApiModelProperty(value = "Buildings placed on this board.")
+    @ElementCollection
     private List<Building> placedBuildings = new ArrayList<>();
 
     private int[] counters = new int[Counter.values().length];
@@ -38,6 +42,7 @@ public class Board {
 
     @ApiModelProperty(value = "Buildings bought and to be placed on this board. " +
             "If this List is non-empty, the next action of the owner is to place these buildings.")
+    @ElementCollection
     private List<Building> availableBuildings = new ArrayList<>();
 
 

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,13 +30,16 @@ public class GameConfig {
             value = "How many buildings of which type can be build during the setup phase before the first round.",
             required = true
     )
-    private ArrayList<NumberOfBuildingType> initialBuildings = new ArrayList<>();
+    @ElementCollection
+    private List<NumberOfBuildingType> initialBuildings = new ArrayList<>();
+
 
     @ApiModelProperty(
             value = "How many buildings of which type can be build in total. Initial buildings are NOT subtracted.",
             required = true
     )
-    private ArrayList<NumberOfBuildingType> availableBuildings = new ArrayList<>();
+    @ElementCollection
+    private List<NumberOfBuildingType> availableBuildings = new ArrayList<>();
 
 
     @ApiModelProperty(

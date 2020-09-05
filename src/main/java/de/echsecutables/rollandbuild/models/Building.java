@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +16,7 @@ import javax.persistence.Embeddable;
 public class Building {
 
     @ApiModelProperty(value = "Most of the information (shape, dice, etc) are encoded in the building type.", required = true)
+    @ManyToOne
     private BuildingType buildingType;
 
     @ApiModelProperty(value = "left/down shift from top left corner of board to top left corner of rotated shape.", required = true)
@@ -23,6 +26,7 @@ public class Building {
     private Orientation orientation = Orientation.ORIGINAL;
 
     @ApiModelProperty(value = "If the Building type has a dice, this field holds the currently rolled face.")
+    @ManyToOne
     private DiceFace lastRolled = null;
 
     public Building(BuildingType buildingType) {

@@ -22,7 +22,8 @@ public class Dice {
     private Long id;
 
     @ApiModelProperty(value = "Multiple sides of the dice may show the same face. The total number of sides of the dice is obtained by summing.")
-    private ArrayList<NumberOfDiceFaces> numberOfSidesWithFaces = new ArrayList<>();
+    @ElementCollection
+    private List<NumberOfDiceFaces> numberOfSidesWithFaces = new ArrayList<>();
 
     @Transient
     @JsonIgnore

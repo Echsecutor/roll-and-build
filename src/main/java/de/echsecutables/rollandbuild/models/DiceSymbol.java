@@ -2,6 +2,8 @@ package de.echsecutables.rollandbuild.models;
 
 import io.swagger.annotations.ApiModel;
 
+import javax.persistence.Embeddable;
+
 @ApiModel(description = "All types of symbols that may appear on dices. Rolling each symbol has a different effect.")
 public enum DiceSymbol {
     CROP, // Increase stored food

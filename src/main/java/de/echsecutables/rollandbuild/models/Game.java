@@ -28,15 +28,16 @@ public class Game {
     private Phase phase = Phase.NOT_READY;
 
     @ApiModelProperty(value = "IDs of players who ready to advance to the next phase.", example = "[23, 42]")
-    private ArrayList<Long> playersReady = new ArrayList<>();
+    @ElementCollection
+    private List<Long> playersReady = new ArrayList<>();
 
     @ApiModelProperty(value = "The currently active player. Applicable in some phases.")
     @ManyToOne
     private Player activePlayer;
 
-    // Embedded.
     @ApiModelProperty(value = "The players' boards in this game.")
-    private ArrayList<Board> boards = new ArrayList<>();
+    @ElementCollection
+    private List<Board> boards = new ArrayList<>();
 
     @ApiModelProperty(value = "The game configuration holds some details of the rules which can be changed per game.")
     @ManyToOne

@@ -1,6 +1,7 @@
 package de.echsecutables.rollandbuild.models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import io.swagger.annotations.ApiModel;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class Player {
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
+    @JsonIgnore
     @Transient
     @Autowired
     private GameRepository gameRepository;
