@@ -5,3 +5,14 @@ logging.level:
 spring:
   session.store-type: jdbc
   h2.console.enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    generate-ddl: true
+    database-platform: H2
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.H2Dialect

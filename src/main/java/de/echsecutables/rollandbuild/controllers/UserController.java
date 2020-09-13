@@ -2,7 +2,7 @@ package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.models.Player;
-import de.echsecutables.rollandbuild.persistence.GamePlayRepositories;
+import de.echsecutables.rollandbuild.persistence.PlayerRepositoryImplementation;
 import io.swagger.annotations.*;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Validator;
@@ -27,17 +27,16 @@ import javax.servlet.http.HttpServletRequest;
         @ApiResponse(code = 500, message = "Internal Server Error. Check the error message for details.", response = GenericApiResponse.class)
 })
 public class UserController {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private GamePlayRepositories gamePlayRepositories;
+    private PlayerRepositoryImplementation playerRepository;
 
     @GetMapping(value = "/player", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get the data for the current user identified by session ID.")
     public ResponseEntity<Player> getPlayerData(HttpServletRequest request) {
         Utils.logRequest(LOGGER, request);
-        return ResponseEntity.ok(gamePlayRepositories.getOrCreatePlayer(request.getSession().getId()));
+        return ResponseEntity.ok(playerRepository.getOrCreatePlayer(request.getSession().getId()));
     }
 
     @PostMapping(value = "/player/name", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,9 +56,9 @@ public class UserController {
             return GenericApiResponse.buildResponse(HttpStatus.BAD_REQUEST, "Invalid Player Name", request.getRequestURI());
         }
 
-        Player player = gamePlayRepositories.getOrCreatePlayer(request.getSession().getId());
+        Player player = playerRepository.getOrCreatePlayer(request.getSession().getId());
         player.setName(name);
-        player = gamePlayRepositories.save(player);
+        player = playerRepository.save(player);
         LOGGER.debug("Changed name for Player: {}", player);
         return GenericApiResponse.buildResponse(HttpStatus.OK, "Name changed to '" + player.getName() + "'", request.getRequestURI());
     }

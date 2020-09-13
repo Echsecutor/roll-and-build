@@ -5,7 +5,8 @@ import de.echsecutables.rollandbuild.controllers.exceptions.*;
 import de.echsecutables.rollandbuild.mechanics.GamePlay;
 import de.echsecutables.rollandbuild.mechanics.GameSetup;
 import de.echsecutables.rollandbuild.models.*;
-import de.echsecutables.rollandbuild.persistence.GamePlayRepositories;
+import de.echsecutables.rollandbuild.persistence.GameRepository;
+import de.echsecutables.rollandbuild.persistence.PlayerRepositoryImplementation;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +31,18 @@ public class GameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameController.class);
 
     @Autowired
-    GamePlayRepositories gamePlayRepositories;
+    PlayerRepositoryImplementation playerRepository;
+
+    @Autowired
+    GameRepository gameRepository;
 
 
     // Load/Create Player and Load game. Throw if game does not exist. (Caught + Transformed to GenericApiResponse)
     private Pair<Game, Player> getGameAndPlayer(Long gameId, HttpServletRequest request) {
         Utils.logRequest(LOGGER, request);
-        Player player = gamePlayRepositories.getOrCreatePlayer(request.getSession().getId());
-        Optional<Game> optionalGame = gamePlayRepositories.loadGame(gameId);
+        Player player = playerRepository.getOrCreatePlayer(request.getSession().getId());
+
+        Optional<Game> optionalGame = gameRepository.findById(gameId);
         if (optionalGame.isEmpty()) {
             LOGGER.debug("Game not found {}", gameId);
             throw new NotFoundException("Game " + gameId + " not found");
@@ -87,7 +92,7 @@ public class GameController {
         GameSetup.loadGameConfig(game, gameConfig);
         game.setPhase(Phase.READY);
         game.getPlayersReady().clear();
-        game = gamePlayRepositories.save(game);
+        game = gameRepository.save(game);
         LOGGER.info("New game config set: {}", game);
 
         return GenericApiResponse.buildResponse(HttpStatus.OK, "Config accepted, Phase advanced to " + game.getPhase(), request.getRequestURI());
@@ -120,11 +125,11 @@ public class GameController {
         Game game;
         HttpStatus re = HttpStatus.OK;
         if (gameId == null) {
-            game = gamePlayRepositories.save(new Game());
+            game = gameRepository.save(new Game());
             LOGGER.info("Created new Game {}", game);
             re = HttpStatus.CREATED;
         } else {
-            Optional<Game> optionalGame = gamePlayRepositories.loadGame(gameId);
+            Optional<Game> optionalGame = gameRepository.findById(gameId);
             if (optionalGame.isEmpty()) {
                 LOGGER.warn("Game not found: {}", gameId);
                 return GenericApiResponse.buildResponse(HttpStatus.NOT_FOUND, "Game ID '" + gameId + "' not found.", request.getRequestURI());
@@ -132,23 +137,24 @@ public class GameController {
             game = optionalGame.get();
         }
 
-        Player player = gamePlayRepositories.getOrCreatePlayer(request.getSession().getId());
+        Player player = playerRepository.getOrCreatePlayer(request.getSession().getId());
+
         if (player.getGames().contains(game)) {
             LOGGER.debug("Player {} already in Game {}", player, game);
 
             if (!game.getPlayers().contains(player)) {
                 LOGGER.error("FIXME! Inconsistent state! Player {} not listed in game {}", player, game);
                 game.join(player);
-                game = gamePlayRepositories.save(game);
+                game = gameRepository.save(game);
                 LOGGER.debug("Fixed game {}", game);
             }
             return GenericApiResponse.buildResponse(HttpStatus.ALREADY_REPORTED, "Already playing in Game ID '" + gameId + "'.", request.getRequestURI());
         }
         player.getGames().add(game);
-        player = gamePlayRepositories.save(player);
+        player = playerRepository.save(player);
 
         game.join(player);
-        game = gamePlayRepositories.save(game);
+        game = gameRepository.save(game);
 
         LOGGER.info("Player {} joined Game {}", player, game);
         return GenericApiResponse.buildResponse(re, game.getId().toString(), request.getRequestURI());
@@ -230,7 +236,7 @@ public class GameController {
             game.getPlayersReady().clear();
         }
 
-        game = gamePlayRepositories.save(game);
+        game = gameRepository.save(game);
         LOGGER.debug("Saved new state {}", game);
 
         return GenericApiResponse.buildResponse(HttpStatus.OK, "Player ready", request.getRequestURI());
@@ -272,7 +278,7 @@ public class GameController {
         if (!placed) {
             return GenericApiResponse.buildResponse(HttpStatus.FORBIDDEN, "Can not place this building there!", request.getRequestURI());
         }
-        Game game = gamePlayRepositories.save(gameAndPlayer.getFirst());
+        Game game = gameRepository.save(gameAndPlayer.getFirst());
         return GenericApiResponse.buildResponse(HttpStatus.OK, "Building placed", request.getRequestURI());
     }
 }

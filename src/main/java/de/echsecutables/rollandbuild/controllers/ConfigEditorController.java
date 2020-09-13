@@ -4,8 +4,12 @@ import de.echsecutables.rollandbuild.Utils;
 import de.echsecutables.rollandbuild.controllers.exceptions.NotFoundException;
 import de.echsecutables.rollandbuild.models.BuildingType;
 import de.echsecutables.rollandbuild.models.Dice;
+import de.echsecutables.rollandbuild.models.DiceFace;
+import de.echsecutables.rollandbuild.models.GameConfig;
 import de.echsecutables.rollandbuild.persistence.BuildingTypeRepository;
+import de.echsecutables.rollandbuild.persistence.DiceFaceRepository;
 import de.echsecutables.rollandbuild.persistence.DiceRepository;
+import de.echsecutables.rollandbuild.persistence.GameConfigRepository;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,12 @@ public class ConfigEditorController {
 
     @Autowired
     DiceRepository diceRepository;
+
+    @Autowired
+    DiceFaceRepository diceFaceRepository;
+
+    @Autowired
+    GameConfigRepository gameConfigRepository;
 
     @GetMapping(value = "/Config/BuildingType/{buildingTypeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(
@@ -83,6 +93,111 @@ public class ConfigEditorController {
         LOGGER.debug("Saved building type {}", saved);
         return ResponseEntity.ok(saved);
     }
+
+
+    @GetMapping(value = "/Config/DiceFace/{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns the requested DiceFace", response = DiceFace.class)
+            }
+    )
+    @ApiOperation(value = "Get a Dice Face by Id.")
+    public ResponseEntity<DiceFace> getDiceFace(
+            @PathVariable("Id") Long Id,
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        Optional<DiceFace> optionalDiceFace = diceFaceRepository.findById(Id);
+        if (optionalDiceFace.isEmpty()) {
+            throw new NotFoundException("Dice Face ID not found");
+        }
+        LOGGER.debug("Dice Face {}", optionalDiceFace.get());
+        return ResponseEntity.ok(optionalDiceFace.get());
+    }
+
+    @PostMapping(value = "/Config/DiceFace", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(
+            value = "Create a new Dice Face if the body is empty, otherwise saves the body.",
+            notes = "CAUTION: Posting a new Dice Face configuration for an existing Dice Face ID will replace the old one!"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns the saved/created Dice Face.", response = DiceFace.class)
+            }
+    )
+    public ResponseEntity<DiceFace> saveDiceFace(
+            @ApiParam(value = "Leave empty to create a new Dice Face. Otherwise the Id must exist to update an existing type.")
+            @RequestBody(required = false) DiceFace diceFace,
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        DiceFace saved;
+
+        if (diceFace == null) {
+            saved = diceFaceRepository.save(new DiceFace());
+        } else {
+            if (diceFaceRepository.findById(diceFace.getId()).isEmpty()) {
+                throw new NotFoundException("diceFace" + diceFace.getId() + " does not exist. " +
+                        "Post an empty request body to create a new one.");
+            }
+            saved = diceFaceRepository.save(diceFace);
+        }
+        LOGGER.debug("Saved diceFace {}", saved);
+        return ResponseEntity.ok(saved);
+    }
+
+
+    @GetMapping(value = "/Config/GameConfig/{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns the requested GameConfig", response = GameConfig.class)
+            }
+    )
+    @ApiOperation(value = "Get a GameConfig by Id.")
+    public ResponseEntity<GameConfig> getGameConfig(
+            @PathVariable("Id") Long Id,
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        Optional<GameConfig> optional = gameConfigRepository.findById(Id);
+        if (optional.isEmpty()) {
+            throw new NotFoundException("Dice GameConfig ID not found");
+        }
+        LOGGER.debug("Dice Face {}", optional.get());
+        return ResponseEntity.ok(optional.get());
+    }
+
+    @PostMapping(value = "/Config/GameConfig", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(
+            value = "Create a new GameConfig if the body is empty, otherwise saves the body.",
+            notes = "CAUTION: Posting a new GameConfig configuration for an existing  ID will replace the old one!"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns the saved/created GameConfig.", response = GameConfig.class)
+            }
+    )
+    public ResponseEntity<GameConfig> saveGameConfig(
+            @ApiParam(value = "Leave empty to create a new GameConfig. Otherwise the Id must exist to update an existing type.")
+            @RequestBody(required = false) GameConfig gameConfig,
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        GameConfig saved;
+
+        if (gameConfig == null) {
+            saved = gameConfigRepository.save(new GameConfig());
+        } else {
+            if (gameConfigRepository.findById(gameConfig.getId()).isEmpty()) {
+                throw new NotFoundException("gameConfig" + gameConfig.getId() + " does not exist. " +
+                        "Post an empty request body to create a new one.");
+            }
+            saved = gameConfigRepository.save(gameConfig);
+        }
+        LOGGER.debug("Saved gameConfig {}", saved);
+        return ResponseEntity.ok(saved);
+    }
+
 
     @GetMapping(value = "/Config/Dice/{diceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(
