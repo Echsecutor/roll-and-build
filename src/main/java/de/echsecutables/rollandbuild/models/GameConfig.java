@@ -1,6 +1,7 @@
 package de.echsecutables.rollandbuild.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.echsecutables.rollandbuild.persistence.LongId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @ApiModel(description = "Set of game specific rules.")
-public class GameConfig {
+public class GameConfig implements LongId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

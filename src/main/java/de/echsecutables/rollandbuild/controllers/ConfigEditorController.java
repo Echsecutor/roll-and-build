@@ -1,6 +1,10 @@
 package de.echsecutables.rollandbuild.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.echsecutables.rollandbuild.Utils;
+import de.echsecutables.rollandbuild.controllers.exceptions.BadRequestException;
 import de.echsecutables.rollandbuild.controllers.exceptions.NotFoundException;
 import de.echsecutables.rollandbuild.models.BuildingType;
 import de.echsecutables.rollandbuild.models.Dice;
@@ -19,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -242,23 +247,14 @@ public class ConfigEditorController {
             }
     )
     public ResponseEntity<GameConfig> saveGameConfig(
-            @ApiParam(value = "Leave empty to create a new GameConfig. Otherwise the Id must exist to update an existing type.")
-            @RequestBody(required = false) GameConfig gameConfig,
+            @ApiParam(value = "Leave empty to create a new GameConfig. Otherwise the Id must exist to update an existing type.",
+            type = "GameConfig")
+            @RequestBody(required = false) String gameConfig,
             HttpServletRequest request
     ) {
         Utils.logRequest(LOGGER, request);
-        GameConfig saved;
-
-        if (gameConfig == null) {
-            saved = gameConfigRepository.save(new GameConfig());
-        } else {
-            if (gameConfigRepository.findById(gameConfig.getId()).isEmpty()) {
-                throw new NotFoundException("gameConfig" + gameConfig.getId() + " does not exist. " +
-                        "Post an empty request body to create a new one.");
-            }
-            saved = gameConfigRepository.save(gameConfig);
-        }
-        LOGGER.debug("Saved gameConfig {}", saved);
+        GameConfig saved = Utils.findAndChangeOrCreateNew(gameConfig, gameConfigRepository, GameConfig.class);
+        LOGGER.debug("Saved {}", saved);
         return ResponseEntity.ok(saved);
     }
 
@@ -307,4 +303,54 @@ public class ConfigEditorController {
         return ResponseEntity.ok(saved);
     }
 
+
+    @PostMapping(value = "/Config/Dice/{diceId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(
+            value = "Set Dice Faces by Ids."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns the saved/created Dice.", response = BuildingType.class)
+            }
+    )
+    public ResponseEntity<Dice> saveDiceByFaceIds(
+            @PathVariable("diceId") Long diceId,
+            @ApiParam(value = "List of Dice Face Ids",
+                    type = "Long",
+                    collectionFormat = "List",
+                    example = "[1,2]",
+                    required = true
+            )
+            @RequestBody String diceFaceIds,
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        Dice dice = diceRepository.findById(diceId)
+                .orElseThrow(() -> new BadRequestException("Dice Id not found: " + diceId.toString()));
+
+        List<DiceFace> diceFaces = new ArrayList<>();
+
+        TypeReference<List<Long>> listTypeReference = new TypeReference<List<Long>>() {
+        };
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<Long> diceFaceLongIds = objectMapper.readValue(diceFaceIds, listTypeReference);
+            for (Long id : diceFaceLongIds) {
+                Optional<DiceFace> optionalDiceFace = diceFaceRepository.findById(id);
+                if (optionalDiceFace.isEmpty()) {
+                    throw new BadRequestException("Dice Face Id " + id.toString() + " does not exist.");
+                }
+                diceFaces.add(optionalDiceFace.get());
+            }
+        } catch (JsonProcessingException e) {
+            LOGGER.debug(e.toString());
+            throw new BadRequestException("Invalid ID List " + diceFaceIds);
+        }
+
+        dice.setDiceFaces(diceFaces);
+        dice = diceRepository.save(dice);
+
+        LOGGER.debug("Saved dice {}", dice);
+        return ResponseEntity.ok(dice);
+    }
 }

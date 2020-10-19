@@ -17,7 +17,64 @@
       ]
     ]
   },
-  "dice": null,
+  "dice": {
+    "id": 1,
+    "diceFaces": [
+      {
+        "id": 1,
+        "rolled": [
+          "CROP",
+          "CROP",
+          "CROP"
+        ],
+        "choice": []
+      },
+      {
+        "id": 2,
+        "rolled": [
+          "HAMMER",
+          "HAMMER"
+        ],
+        "choice": []
+      },
+      {
+        "id": 3,
+        "rolled": [
+          "STONE",
+          "STONE"
+        ],
+        "choice": []
+      },
+      {
+        "id": 4,
+        "rolled": [
+          "WOOD",
+          "WOOD",
+          "WOOD"
+        ],
+        "choice": []
+      },
+      {
+        "id": 5,
+        "rolled": [
+          "CROP",
+          "CROP"
+        ],
+        "choice": [
+          "STONE"
+        ]
+      },
+      {
+        "id": 6,
+        "rolled": [
+          "DISASTER",
+          "WOOD",
+          "HAMMER"
+        ],
+        "choice": []
+      }
+    ]
+  },
   "costs": [
     0,
     1,
