@@ -1,9 +1,17 @@
 package de.echsecutables.rollandbuild;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.echsecutables.rollandbuild.controllers.exceptions.BadRequestException;
+import de.echsecutables.rollandbuild.controllers.exceptions.BugFoundException;
+import de.echsecutables.rollandbuild.controllers.exceptions.NotFoundException;
 import de.echsecutables.rollandbuild.models.Building;
 import de.echsecutables.rollandbuild.models.NumberOfBuildingType;
+import de.echsecutables.rollandbuild.persistence.LongId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.repository.CrudRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -48,5 +56,40 @@ public class Utils {
             }
         }
         return re;
+    }
+
+    public static <T extends LongId> T findAndChangeOrCreateNew(String tJson, CrudRepository<T, Long> repository, Class<T> typeParameterClass) {
+        T saved = null;
+        if (tJson != null && !tJson.isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                T input = objectMapper.readValue(tJson, typeParameterClass);
+                if (input.getId() != null) {
+                    if (repository.findById(input.getId()).isEmpty()) {
+                        throw new NotFoundException("Building Type " + input.getId() + " does not exist. " +
+                                "Post an empty request body to create a new building type.");
+                    }
+                    try {
+                        saved = repository.save(input);
+                    } catch (InvalidDataAccessApiUsageException ex) {
+                        LOGGER.debug(ex.toString());
+                        throw new BadRequestException("Objects with their own ID can not be changed through containers. E.g. Change a Dice directly not through a containing BuildingType.");
+                    }
+                }
+            } catch (JsonProcessingException e) {
+                LOGGER.debug(e.toString());
+            }
+        }
+
+        if (saved == null) {
+            LOGGER.debug("'{}' is not a valid/existing building type -> creating new one", tJson);
+            try {
+                saved = repository.save(typeParameterClass.getDeclaredConstructor().newInstance());
+            } catch (Exception ex) {
+                LOGGER.error(ex.toString());
+                throw new BugFoundException("Could not call constructor for type " + typeParameterClass.getName());
+            }
+        }
+        return saved;
     }
 }

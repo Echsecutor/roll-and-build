@@ -1,5 +1,6 @@
 package de.echsecutables.rollandbuild.models;
 
+import de.echsecutables.rollandbuild.persistence.LongId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.List;
         "A simple face only has a number of symbols which are rolled simultaneously. " +
         "A 'choice face' has two sets of symbols rolled where the player can later choose one of the two.")
 @Entity
-public class DiceFace {
+public class DiceFace implements LongId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

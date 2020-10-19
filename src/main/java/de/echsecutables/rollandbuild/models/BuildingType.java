@@ -1,5 +1,6 @@
 package de.echsecutables.rollandbuild.models;
 
+import de.echsecutables.rollandbuild.persistence.LongId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,12 +12,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @ApiModel(description = "Represents a type of building.")
-public class BuildingType {
+public class BuildingType implements LongId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "Primary Key", example = "42")
     private Long id;
+
+    @ApiModelProperty(value = "Human readable ID to be used in game.", example = "Farm")
+    private String name;
 
     @ApiModelProperty(value = "2d Shape of this buildings base", required = true)
     private Shape shape;

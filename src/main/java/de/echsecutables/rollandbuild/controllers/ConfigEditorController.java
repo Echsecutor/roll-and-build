@@ -19,7 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @Api
@@ -43,6 +46,25 @@ public class ConfigEditorController {
     @Autowired
     GameConfigRepository gameConfigRepository;
 
+    @GetMapping(value = "/Config/BuildingType", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns all BuildingTypes", response = BuildingType.class, responseContainer = "List")
+            }
+    )
+    @ApiOperation(value = "Get all Building Types")
+    public ResponseEntity<List<BuildingType>> getBuildingTypes(
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        List<BuildingType> buildings = StreamSupport
+                .stream(buildingTypeRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+
+        LOGGER.debug("Building Types {}", buildings);
+        return ResponseEntity.ok(buildings);
+    }
+
     @GetMapping(value = "/Config/BuildingType/{buildingTypeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(
             value = {
@@ -63,6 +85,41 @@ public class ConfigEditorController {
         return ResponseEntity.ok(optionalBuilding.get());
     }
 
+    @PostMapping(value = "/Config/BuildingType/setDiceId/{buildingTypeId}", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(
+            value = "Set the Dice of a building type by Id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns the saved/created BuildingType.", response = BuildingType.class)
+            }
+    )
+    public ResponseEntity<BuildingType> saveBuildingTypeDiceId(
+            @PathVariable("buildingTypeId") Long buildingTypeId,
+            @ApiParam(value = "ID of an existing Dice",
+                    required = true,
+                    example = "1"
+            )
+            @RequestBody Long diceId,
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        Optional<BuildingType> optionalBuilding = buildingTypeRepository.findById(buildingTypeId);
+        if (optionalBuilding.isEmpty()) {
+            throw new NotFoundException("Building ID not found");
+        }
+        Optional<Dice> optionalDice = diceRepository.findById(diceId);
+        if (optionalDice.isEmpty()) {
+            throw new NotFoundException("Dice ID not found");
+        }
+        LOGGER.debug("Found buildingType {} and Dice {}", optionalBuilding.get(), optionalDice.get());
+
+        BuildingType buildingType = optionalBuilding.get();
+        buildingType.setDice(optionalDice.get());
+
+        return ResponseEntity.ok(buildingTypeRepository.save(buildingType));
+    }
+
     @PostMapping(value = "/Config/BuildingType", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(
             value = "Create a new Building Type if the body is empty, otherwise saves the body.",
@@ -74,22 +131,17 @@ public class ConfigEditorController {
             }
     )
     public ResponseEntity<BuildingType> saveBuildingType(
-            @ApiParam(value = "Leave empty to create a new BuildingType. Otherwise the Id must exist to update an existing type.")
-            @RequestBody(required = false) BuildingType buildingType,
+            @ApiParam(value = "Leave empty to create a new BuildingType. Otherwise the Id must exist to update an existing type.",
+                    required = false,
+                    allowEmptyValue = true,
+                    example = "",
+                    type = "BuildingType"
+            )
+            @RequestBody(required = false) String buildingType,
             HttpServletRequest request
     ) {
         Utils.logRequest(LOGGER, request);
-        BuildingType saved;
-
-        if (buildingType == null) {
-            saved = buildingTypeRepository.save(new BuildingType());
-        } else {
-            if (buildingTypeRepository.findById(buildingType.getId()).isEmpty()) {
-                throw new NotFoundException("Building Type " + buildingType.getId() + " does not exist. " +
-                        "Post an empty request body to create a new building type.");
-            }
-            saved = buildingTypeRepository.save(buildingType);
-        }
+        BuildingType saved = Utils.findAndChangeOrCreateNew(buildingType, buildingTypeRepository, BuildingType.class);
         LOGGER.debug("Saved building type {}", saved);
         return ResponseEntity.ok(saved);
     }
@@ -115,6 +167,25 @@ public class ConfigEditorController {
         return ResponseEntity.ok(optionalDiceFace.get());
     }
 
+    @GetMapping(value = "/Config/DiceFace", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Returns all DiceFaces",
+                            response = DiceFace.class,
+                            responseContainer = "List"
+                    )
+            }
+    )
+    @ApiOperation(value = "Get all Dice Face")
+    public ResponseEntity<List<DiceFace>> getDiceFaces(
+            HttpServletRequest request
+    ) {
+        Utils.logRequest(LOGGER, request);
+        List<DiceFace> diceFaces = StreamSupport.stream(diceFaceRepository.findAll().spliterator(), false).collect(Collectors.toList());
+        LOGGER.debug("Dice Faces {}", diceFaces);
+        return ResponseEntity.ok(diceFaces);
+    }
+
     @PostMapping(value = "/Config/DiceFace", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(
             value = "Create a new Dice Face if the body is empty, otherwise saves the body.",
@@ -126,22 +197,15 @@ public class ConfigEditorController {
             }
     )
     public ResponseEntity<DiceFace> saveDiceFace(
-            @ApiParam(value = "Leave empty to create a new Dice Face. Otherwise the Id must exist to update an existing type.")
-            @RequestBody(required = false) DiceFace diceFace,
+            @ApiParam(value = "Leave empty to create a new Dice Face. Otherwise the Id must exist to update an existing type.",
+                    type = "DiceFace",
+                    example = ""
+            )
+            @RequestBody(required = false) String diceFace,
             HttpServletRequest request
     ) {
         Utils.logRequest(LOGGER, request);
-        DiceFace saved;
-
-        if (diceFace == null) {
-            saved = diceFaceRepository.save(new DiceFace());
-        } else {
-            if (diceFaceRepository.findById(diceFace.getId()).isEmpty()) {
-                throw new NotFoundException("diceFace" + diceFace.getId() + " does not exist. " +
-                        "Post an empty request body to create a new one.");
-            }
-            saved = diceFaceRepository.save(diceFace);
-        }
+        DiceFace saved = Utils.findAndChangeOrCreateNew(diceFace, diceFaceRepository, DiceFace.class);
         LOGGER.debug("Saved diceFace {}", saved);
         return ResponseEntity.ok(saved);
     }
@@ -230,22 +294,15 @@ public class ConfigEditorController {
             }
     )
     public ResponseEntity<Dice> saveDice(
-            @ApiParam(value = "Leave empty to create a new Dice. Otherwise the Id must exist to update an existing Dice.")
-            @RequestBody(required = false) Dice dice,
+            @ApiParam(value = "Leave empty to create a new Dice. Otherwise the Id must exist to update an existing Dice.",
+                    type = "Dice",
+                    example = "")
+            @RequestBody(required = false) String dice,
             HttpServletRequest request
     ) {
         Utils.logRequest(LOGGER, request);
-        Dice saved;
+        Dice saved = Utils.findAndChangeOrCreateNew(dice, diceRepository, Dice.class);
 
-        if (dice == null) {
-            saved = diceRepository.save(new Dice());
-        } else {
-            if (diceRepository.findById(dice.getId()).isEmpty()) {
-                throw new NotFoundException("Dice id " + dice.getId() + " does not exist. " +
-                        "Post an empty request to create a new dice.");
-            }
-            saved = diceRepository.save(dice);
-        }
         LOGGER.debug("Saved dice {}", saved);
         return ResponseEntity.ok(saved);
     }

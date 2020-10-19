@@ -3,12 +3,10 @@ package de.echsecutables.rollandbuild.mechanics;
 import de.echsecutables.rollandbuild.models.Dice;
 import de.echsecutables.rollandbuild.models.DiceFace;
 import de.echsecutables.rollandbuild.models.DiceSymbol;
-import de.echsecutables.rollandbuild.models.NumberOfDiceFaces;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 class GamePlayTest {
 
@@ -19,27 +17,20 @@ class GamePlayTest {
         DiceFace crop = new DiceFace(List.of(DiceSymbol.CROP));
 
         Dice dice = new Dice();
-        dice.addSides(1, disaster);
-        dice.addSides(1, crop);
+        dice.getDiceFaces().add(disaster);
+        dice.getDiceFaces().add(crop);
 
         checkAllRolled(dice);
     }
 
     private void checkAllRolled(Dice dice) {
-        List<DiceFace> diceFaces = dice.getNumberOfSidesWithFaces()
-                .stream()
-                .map(NumberOfDiceFaces::getDiceFace)
-                .collect(Collectors.toList());
 
-        Assert.assertTrue(diceFaces.size() > 0);
+        Assert.assertTrue(dice.getDiceFaces().size() > 0);
 
-        boolean[] rolled = new boolean[diceFaces.size()];
+        boolean[] rolled = new boolean[dice.getDiceFaces().size()];
 
         long seed = 23;
-        int num_sides = dice.getNumberOfSidesWithFaces()
-                .stream()
-                .mapToInt(NumberOfDiceFaces::getNumber)
-                .sum();
+        int num_sides = dice.getDiceFaces().size();
 
         int num_rolls = 3 * num_sides; // do some more serious math if time permits ;)
 
@@ -47,8 +38,8 @@ class GamePlayTest {
             seed *= 42;
             DiceFace currentResult = GamePlay.roll(dice, seed);
             boolean found = false;
-            for (int i = 0; i < diceFaces.size(); i++) {
-                if (currentResult == diceFaces.get(i)) {
+            for (int i = 0; i < dice.getDiceFaces().size(); i++) {
+                if (currentResult == dice.getDiceFaces().get(i)) {
                     found = true;
                     rolled[i] = true;
                 }
@@ -68,9 +59,9 @@ class GamePlayTest {
         DiceFace crop = new DiceFace(List.of(DiceSymbol.CROP, DiceSymbol.CROP, DiceSymbol.CROP));
 
         Dice dice = new Dice();
-        dice.addSides(1, disaster);
-        dice.addSides(2, choice);
-        dice.addSides(3, crop);
+        dice.getDiceFaces().add(disaster);
+        dice.getDiceFaces().add(choice);
+        dice.getDiceFaces().add(crop);
 
         checkAllRolled(dice);
 

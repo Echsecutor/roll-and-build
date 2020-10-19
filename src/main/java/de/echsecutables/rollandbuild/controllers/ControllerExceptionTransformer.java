@@ -1,6 +1,7 @@
 package de.echsecutables.rollandbuild.controllers;
 
 import de.echsecutables.rollandbuild.controllers.exceptions.*;
+import org.hibernate.TransientPropertyValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -26,6 +27,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ControllerExceptionTransformer extends ResponseEntityExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControllerExceptionTransformer.class);
+
+
+    // TODO: InvalidDataAccessApiUsageException
 
     @ExceptionHandler(BugFoundException.class)
     public ResponseEntity<GenericApiResponse> handleBugFoundException(BugFoundException ex, WebRequest request) {
