@@ -23,7 +23,7 @@ public class Dice implements LongId {
     private Long id;
 
     @ApiModelProperty(value = "Multiple sides of the dice may show the same face. The total number of sides of the dice is obtained by summing.")
-    @ElementCollection
+    @ManyToMany
     private List<DiceFace> diceFaces = new ArrayList<>();
 
     public Dice(Collection<? extends DiceFace> faces) {
