@@ -127,7 +127,7 @@ public class ConfigEditorController {
 
     @PostMapping(value = "/Config/BuildingType", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(
-            value = "Create a new Building Type if the body is empty, otherwise saves the body.",
+            value = "Create a new Building Type if the body is empty, or given ID does not exist, otherwise change the identified Entity.",
             notes = "CAUTION: Posting a new BuildingType configuration for an existing building type ID will replace the old one!"
     )
     @ApiResponses(
