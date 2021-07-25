@@ -8,7 +8,6 @@ import org.assertj.core.util.Lists;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,6 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
 @ContextConfiguration
 @WebAppConfiguration
 @WebMvcTest(controllers = UserController.class)
-@RunWith(SpringRunner.class)
 class UserControllerTest {
 
     @Autowired

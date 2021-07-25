@@ -53,6 +53,16 @@ public class GenericApiResponse {
         return status.getReasonPhrase();
     }
 
+    @JsonSetter(value = "timestamp")
+    public void setTimesteampString(String time) {
+        timestamp = LocalDateTime.parse(time);
+    }
+
+    @JsonSetter(value = "status")
+    public void setStatus(int code) {
+        status = HttpStatus.resolve(code);
+    }
+
     private static GenericApiResponse buildGenericApiResponse(HttpStatus status, String message, String path) {
         LOGGER.debug("Building generic API response : ({}, {}, {})", status.toString(), message, path);
         return new GenericApiResponse(status, message, path);
@@ -71,14 +81,6 @@ public class GenericApiResponse {
         return buildResponse(stringResponse.getStatusCode(), stringResponse.getBody(), path);
     }
 
-    @JsonSetter(value = "timestamp")
-    public void setTimesteampString(String time) {
-        timestamp = LocalDateTime.parse(time);
-    }
 
-    @JsonSetter(value = "status")
-    public void setStatus(int code) {
-        status = HttpStatus.resolve(code);
-    }
 
 }

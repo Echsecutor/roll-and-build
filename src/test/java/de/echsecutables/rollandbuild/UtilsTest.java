@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.echsecutables.rollandbuild.mechanics.Geometry;
 import de.echsecutables.rollandbuild.models.Orientation;
 import de.echsecutables.rollandbuild.models.Shape;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UtilsTest {
 
@@ -22,15 +23,15 @@ class UtilsTest {
 
         Shape cw = Geometry.rotateShape(t, Orientation.CLOCKWISE);
         Shape cwExpected = mapper.readValue(cwExpectedJSON, Shape.class);
-        Assert.assertEquals(cwExpected, cw);
+        assertEquals(cwExpected, cw);
 
         Shape ccw = Geometry.rotateShape(t, Orientation.COUNTERCLOCKWISE);
         Shape ccwExpected = mapper.readValue(ccwExpectedJSON, Shape.class);
-        Assert.assertEquals(ccwExpected, ccw);
+        assertEquals(ccwExpected, ccw);
 
         Shape half = Geometry.rotateShape(t, Orientation.HALF);
         Shape halfExpected = mapper.readValue(halfExpectedJSON, Shape.class);
-        Assert.assertEquals(halfExpected, half);
+        assertEquals(halfExpected, half);
 
         //System.out.println(mapper.writeValueAsString(half));
 

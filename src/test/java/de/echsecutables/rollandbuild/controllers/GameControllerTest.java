@@ -6,10 +6,8 @@ import de.echsecutables.rollandbuild.models.*;
 import de.echsecutables.rollandbuild.persistence.GameRepository;
 import de.echsecutables.rollandbuild.persistence.PlayerRepository;
 import org.assertj.core.util.Lists;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
@@ -38,7 +37,6 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
 @ContextConfiguration
 @WebAppConfiguration
 @WebMvcTest(controllers = GameController.class)
-@RunWith(SpringRunner.class)
 class GameControllerTest {
 
     @Autowired
@@ -170,11 +168,11 @@ class GameControllerTest {
         re = mapper.readValue(reStr, GenericApiResponse.class);
         Long gameId = Long.parseLong(re.getMessage());
 
-        Assert.assertTrue(gameRepoMock.containsKey(gameId));
+        assertTrue(gameRepoMock.containsKey(gameId));
         Game game = gameRepoMock.get(gameId);
 
-        Assert.assertEquals(gameId, game.getId());
-        Assert.assertEquals(1, game.getPlayers().size());
+        assertEquals(gameId, game.getId());
+        assertEquals(1, game.getPlayers().size());
 
 
     }

@@ -3,10 +3,11 @@ package de.echsecutables.rollandbuild.mechanics;
 import de.echsecutables.rollandbuild.models.Dice;
 import de.echsecutables.rollandbuild.models.DiceFace;
 import de.echsecutables.rollandbuild.models.DiceSymbol;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GamePlayTest {
 
@@ -25,7 +26,7 @@ class GamePlayTest {
 
     private void checkAllRolled(Dice dice) {
 
-        Assert.assertTrue(dice.getDiceFaces().size() > 0);
+        assertTrue(dice.getDiceFaces().size() > 0);
 
         boolean[] rolled = new boolean[dice.getDiceFaces().size()];
 
@@ -44,10 +45,10 @@ class GamePlayTest {
                     rolled[i] = true;
                 }
             }
-            Assert.assertTrue("Rolled non existing face.", found);
+            assertTrue(found, "Rolled non existing face.");
         }
         for (boolean faceRolled : rolled) {
-            Assert.assertTrue("Not all faces where rolled!", faceRolled);
+            assertTrue(faceRolled, "Not all faces where rolled!");
         }
     }
 
