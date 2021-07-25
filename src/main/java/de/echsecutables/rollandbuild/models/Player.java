@@ -1,22 +1,16 @@
 package de.echsecutables.rollandbuild.models;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import de.echsecutables.rollandbuild.persistence.GameRepository;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -25,11 +19,6 @@ import java.util.stream.Collectors;
 @ApiModel(description = "A user playing zero or many games.")
 public class Player {
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
-
-    @JsonIgnore
-    @Transient
-    @Autowired
-    private GameRepository gameRepository;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,8 +33,8 @@ public class Player {
     private String name;
 
     @ApiModelProperty(value = "IDs of games played by this user.")
-    @ManyToMany
-    private List<Game> games = new ArrayList<>();
+    @ElementCollection
+    private List<Long> games = new ArrayList<>();
 
     public Player(String sessionId) {
         this.sessionId = sessionId;
@@ -57,28 +46,8 @@ public class Player {
                 "id=" + id +
                 ", sessionId='" + sessionId + '\'' +
                 ", name='" + name + '\'' +
-                ", games=" + games.stream().map(Game::getId).map(Object::toString).collect(Collectors.joining(", ", "[", "]")) +
+                ", games=" + games.stream().map(Object::toString).collect(Collectors.joining(", ", "[", "]")) +
                 '}';
-    }
-
-    @Transient
-    @JsonGetter("games")
-    public List<Long> getGameIds() {
-        return games.stream().map(Game::getId).collect(Collectors.toList());
-    }
-
-    @Transient
-    @JsonSetter("games")
-    // TODO: Test!
-    public void loadGameIds(List<Long> gameIds) {
-        for (Long id : gameIds) {
-            Optional<Game> game = gameRepository.findById(id);
-            if (game.isPresent()) {
-                games.add(game.get());
-            } else {
-                LOGGER.warn("Game {} not in repository. Ignored in JSON deserialization.", id);
-            }
-        }
     }
 
     @Override

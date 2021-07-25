@@ -139,7 +139,7 @@ public class GameController {
 
         Player player = playerRepository.getOrCreatePlayer(request.getSession().getId());
 
-        if (player.getGames().contains(game)) {
+        if (player.getGames().contains(game.getId())) {
             LOGGER.debug("Player {} already in Game {}", player, game);
 
             if (!game.getPlayers().contains(player)) {
@@ -150,7 +150,7 @@ public class GameController {
             }
             return GenericApiResponse.buildResponse(HttpStatus.ALREADY_REPORTED, "Already playing in Game ID '" + gameId + "'.", request.getRequestURI());
         }
-        player.getGames().add(game);
+        player.getGames().add(game.getId());
         player = playerRepository.save(player);
 
         game.join(player);
